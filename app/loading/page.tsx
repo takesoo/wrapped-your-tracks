@@ -1,44 +1,44 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { Music, Loader2 } from "lucide-react"
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Music, Loader2 } from 'lucide-react';
 
 export default function LoadingPage() {
-  const router = useRouter()
-  const [progress, setProgress] = useState(0)
-  const [currentStep, setCurrentStep] = useState(0)
+  const router = useRouter();
+  const [progress, setProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const steps = [
-    "Connecting to Spotify...",
-    "Fetching your listening history...",
-    "Analyzing your music taste...",
-    "Generating your AI persona...",
-    "Preparing your summary...",
-  ]
+    'Connecting to Spotify...',
+    'Fetching your listening history...',
+    'Analyzing your music taste...',
+    'Generating your AI persona...',
+    'Preparing your summary...',
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          clearInterval(interval)
-          setTimeout(() => router.push("/summary"), 500)
-          return 100
+          clearInterval(interval);
+          setTimeout(() => router.push('/summary'), 500);
+          return 100;
         }
-        return prev + 2
-      })
-    }, 100)
+        return prev + 2;
+      });
+    }, 100);
 
-    return () => clearInterval(interval)
-  }, [router])
+    return () => clearInterval(interval);
+  }, [router]);
 
   useEffect(() => {
     const stepInterval = setInterval(() => {
-      setCurrentStep((prev) => (prev + 1) % steps.length)
-    }, 1000)
+      setCurrentStep((prev) => (prev + 1) % steps.length);
+    }, 1000);
 
-    return () => clearInterval(stepInterval)
-  }, [steps.length])
+    return () => clearInterval(stepInterval);
+  }, [steps.length]);
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center">
@@ -59,7 +59,8 @@ export default function LoadingPage() {
             <div
               className="bg-linear-to-r from-[#1DB954] to-[#00FFC2] h-3 rounded-full transition-all duration-300 ease-out shadow-[0_0_20px_rgba(29,185,84,0.5)]"
               style={{ width: `${progress}%` }}
-            ></div>
+            >
+            </div>
           </div>
           <p className="text-[#A1A1A1] text-sm">{progress}% complete</p>
         </div>
@@ -79,10 +80,11 @@ export default function LoadingPage() {
               key={i}
               className="w-3 h-3 bg-[#33BBFF] rounded-full animate-bounce"
               style={{ animationDelay: `${i * 0.2}s` }}
-            ></div>
+            >
+            </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

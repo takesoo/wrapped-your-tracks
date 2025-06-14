@@ -1,35 +1,35 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Music, Share2, RotateCcw, Crown, Play, Sparkles } from "lucide-react"
-import Link from "next/link"
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts"
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Music, Share2, RotateCcw, Crown, Play, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 
 // Mock data
 const topArtists = [
-  { name: "The Weeknd", plays: 47, rank: 1 },
-  { name: "Daft Punk", plays: 32, rank: 2 },
-  { name: "Tame Impala", plays: 28, rank: 3 },
-  { name: "Arctic Monkeys", plays: 24, rank: 4 },
-  { name: "Radiohead", plays: 19, rank: 5 },
-]
+  { name: 'The Weeknd', plays: 47, rank: 1 },
+  { name: 'Daft Punk', plays: 32, rank: 2 },
+  { name: 'Tame Impala', plays: 28, rank: 3 },
+  { name: 'Arctic Monkeys', plays: 24, rank: 4 },
+  { name: 'Radiohead', plays: 19, rank: 5 },
+];
 
 const topTracks = [
-  { name: "Blinding Lights", artist: "The Weeknd", plays: 12 },
-  { name: "One More Time", artist: "Daft Punk", plays: 9 },
-  { name: "The Less I Know The Better", artist: "Tame Impala", plays: 8 },
-  { name: "Do I Wanna Know?", artist: "Arctic Monkeys", plays: 7 },
-  { name: "Paranoid Android", artist: "Radiohead", plays: 6 },
-]
+  { name: 'Blinding Lights', artist: 'The Weeknd', plays: 12 },
+  { name: 'One More Time', artist: 'Daft Punk', plays: 9 },
+  { name: 'The Less I Know The Better', artist: 'Tame Impala', plays: 8 },
+  { name: 'Do I Wanna Know?', artist: 'Arctic Monkeys', plays: 7 },
+  { name: 'Paranoid Android', artist: 'Radiohead', plays: 6 },
+];
 
 const chartData = topArtists.map((artist) => ({
-  name: artist.name.split(" ")[0], // Shortened for chart
+  name: artist.name.split(' ')[0], // Shortened for chart
   plays: artist.plays,
-}))
+}));
 
-const colors = ["#1DB954", "#00FFC2", "#33BBFF", "#FF6B6B", "#FFD93D"]
+const colors = ['#1DB954', '#00FFC2', '#33BBFF', '#FF6B6B', '#FFD93D'];
 
 export default function SummaryPage() {
   return (
@@ -101,7 +101,7 @@ export default function SummaryPage() {
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData}>
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#A1A1A1", fontSize: 12 }} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#A1A1A1', fontSize: 12 }} />
                     <YAxis hide />
                     <Bar dataKey="plays" radius={[8, 8, 0, 0]}>
                       {chartData.map((entry, index) => (
@@ -204,5 +204,5 @@ export default function SummaryPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
