@@ -46,10 +46,10 @@ export default function LoadingPage() {
         {/* Animated Logo */}
         <div className="mb-12">
           <div className="relative">
-            <div className="h-24 w-24 mx-auto rounded-full bg-gradient-to-br from-[#1DB954] to-[#00FFC2] flex items-center justify-center animate-pulse">
+            <div className="h-24 w-24 mx-auto rounded-full bg-linear-to-br from-[#1DB954] to-[#00FFC2] flex items-center justify-center animate-pulse">
               <Music className="h-12 w-12 text-black" />
             </div>
-            <div className="absolute inset-0 h-24 w-24 mx-auto rounded-full bg-gradient-to-br from-[#1DB954] to-[#00FFC2] animate-ping opacity-20"></div>
+            <div className="absolute inset-0 h-24 w-24 mx-auto rounded-full bg-linear-to-br from-[#1DB954] to-[#00FFC2] animate-ping opacity-20"></div>
           </div>
         </div>
 
@@ -57,7 +57,7 @@ export default function LoadingPage() {
         <div className="mb-8">
           <div className="w-full bg-gray-800 rounded-full h-3 mb-4">
             <div
-              className="bg-gradient-to-r from-[#1DB954] to-[#00FFC2] h-3 rounded-full transition-all duration-300 ease-out shadow-[0_0_20px_rgba(29,185,84,0.5)]"
+              className="bg-linear-to-r from-[#1DB954] to-[#00FFC2] h-3 rounded-full transition-all duration-300 ease-out shadow-[0_0_20px_rgba(29,185,84,0.5)]"
               style={{ width: `${progress}%` }}
             ></div>
           </div>

@@ -35,11 +35,11 @@ export default function SummaryPage() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-[#0D0D0D]/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-gray-800 bg-[#0D0D0D]/80 backdrop-blur-xs sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#1DB954] to-[#00FFC2] flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-linear-to-br from-[#1DB954] to-[#00FFC2] flex items-center justify-center">
                 <Music className="h-5 w-5 text-black" />
               </div>
               <span className="text-xl font-bold">SpotifyWrapped</span>
@@ -61,7 +61,7 @@ export default function SummaryPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Title Section */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-[#00FFC2] to-[#33BBFF] bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-linear-to-r from-white via-[#00FFC2] to-[#33BBFF] bg-clip-text text-transparent">
             Your Week in Music
           </h1>
           <p className="text-xl text-[#A1A1A1]">December 6-12, 2024</p>
@@ -69,7 +69,7 @@ export default function SummaryPage() {
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
           {/* Top Artists */}
-          <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-3xl backdrop-blur-sm">
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-3xl backdrop-blur-xs">
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center">
                 <Crown className="h-6 w-6 text-[#1DB954] mr-3" />
@@ -84,7 +84,7 @@ export default function SummaryPage() {
                     className="flex items-center justify-between p-4 rounded-2xl bg-gray-800/50 hover:bg-gray-800/70 transition-colors"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#1DB954] to-[#00FFC2] text-black font-bold text-sm">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-linear-to-br from-[#1DB954] to-[#00FFC2] text-black font-bold text-sm">
                         {artist.rank}
                       </div>
                       <div>
@@ -115,7 +115,7 @@ export default function SummaryPage() {
           </Card>
 
           {/* Top Tracks */}
-          <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-3xl backdrop-blur-sm">
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-3xl backdrop-blur-xs">
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center">
                 <Music className="h-6 w-6 text-[#33BBFF] mr-3" />
@@ -130,7 +130,7 @@ export default function SummaryPage() {
                     className="flex items-center justify-between p-4 rounded-2xl bg-gray-800/50 hover:bg-gray-800/70 transition-colors"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#33BBFF] to-[#00FFC2] text-black font-bold text-sm">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-linear-to-br from-[#33BBFF] to-[#00FFC2] text-black font-bold text-sm">
                         {index + 1}
                       </div>
                       <div>
@@ -150,7 +150,7 @@ export default function SummaryPage() {
 
         {/* AI Music Persona */}
         <div className="mt-8 max-w-4xl mx-auto">
-          <Card className="bg-gradient-to-br from-purple-900/30 via-gray-900/50 to-blue-900/30 border-gray-700 rounded-3xl backdrop-blur-sm">
+          <Card className="bg-linear-to-br from-purple-900/30 via-gray-900/50 to-blue-900/30 border-gray-700 rounded-3xl backdrop-blur-xs">
             <CardHeader>
               <CardTitle className="text-3xl font-bold flex items-center justify-center">
                 <Sparkles className="h-8 w-8 text-[#00FFC2] mr-3" />
@@ -159,7 +159,7 @@ export default function SummaryPage() {
             </CardHeader>
             <CardContent className="text-center">
               <div className="mb-6">
-                <Badge className="bg-gradient-to-r from-[#1DB954] to-[#00FFC2] text-black font-semibold px-4 py-2 text-lg rounded-full">
+                <Badge className="bg-linear-to-r from-[#1DB954] to-[#00FFC2] text-black font-semibold px-4 py-2 text-lg rounded-full">
                   The Nocturnal Dreamer
                 </Badge>
               </div>
@@ -189,15 +189,15 @@ export default function SummaryPage() {
 
         {/* Stats Summary */}
         <div className="mt-8 grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-sm text-center p-6">
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
             <h3 className="text-3xl font-bold text-[#1DB954] mb-2">127</h3>
             <p className="text-[#A1A1A1]">Total Tracks Played</p>
           </Card>
-          <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-sm text-center p-6">
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
             <h3 className="text-3xl font-bold text-[#33BBFF] mb-2">8.5</h3>
             <p className="text-[#A1A1A1]">Hours Listened</p>
           </Card>
-          <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-sm text-center p-6">
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
             <h3 className="text-3xl font-bold text-[#00FFC2] mb-2">23</h3>
             <p className="text-[#A1A1A1]">Unique Artists</p>
           </Card>
