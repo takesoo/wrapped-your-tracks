@@ -1,103 +1,100 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Music, Sparkles, TrendingUp, Users } from "lucide-react"
+import Link from "next/link"
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
+      {/* Navigation */}
+      <nav className="border-b border-gray-800 bg-[#0D0D0D]/80 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#1DB954] to-[#00FFC2] flex items-center justify-center">
+                <Music className="h-5 w-5 text-black" />
+              </div>
+              <span className="text-xl font-bold">SpotifyWrapped</span>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="text-center max-w-4xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-[#00FFC2] to-[#33BBFF] bg-clip-text text-transparent">
+              Your Week in Music
+            </h1>
+            <p className="text-xl md:text-2xl text-[#A1A1A1] mb-8 leading-relaxed">
+              Discover your weekly listening patterns, top artists, and get an AI-generated music persona that captures
+              your unique taste.
+            </p>
+          </div>
+
+          {/* CTA Button */}
+          <div className="mb-16">
+            <Link href="/loading">
+              <Button
+                size="lg"
+                className="bg-[#1DB954] hover:bg-[#1ed760] text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(29,185,84,0.5)] hover:scale-105"
+              >
+                <Music className="mr-2 h-5 w-5" />
+                Connect with Spotify
+              </Button>
+            </Link>
+          </div>
+
+          {/* Preview Image */}
+          <div className="relative">
+            <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 p-8 rounded-3xl backdrop-blur-sm">
+              <div className="aspect-video bg-gradient-to-br from-[#1DB954]/20 to-[#00FFC2]/20 rounded-2xl flex items-center justify-center border border-gray-700">
+                <div className="text-center">
+                  <Sparkles className="h-16 w-16 text-[#00FFC2] mx-auto mb-4" />
+                  <p className="text-[#A1A1A1] text-lg">Preview of your personalized music summary</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 p-8 rounded-3xl backdrop-blur-sm hover:shadow-[0_0_30px_rgba(0,255,194,0.1)] transition-all duration-300">
+            <TrendingUp className="h-12 w-12 text-[#00FFC2] mb-6" />
+            <h3 className="text-2xl font-bold mb-4">Top Tracks & Artists</h3>
+            <p className="text-[#A1A1A1] leading-relaxed">
+              See your most played songs and artists from the past week with beautiful visualizations and play counts.
+            </p>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 p-8 rounded-3xl backdrop-blur-sm hover:shadow-[0_0_30px_rgba(51,187,255,0.1)] transition-all duration-300">
+            <Sparkles className="h-12 w-12 text-[#33BBFF] mb-6" />
+            <h3 className="text-2xl font-bold mb-4">AI Music Persona</h3>
+            <p className="text-[#A1A1A1] leading-relaxed">
+              Get a personalized AI-generated description of your music taste and listening personality.
+            </p>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700 p-8 rounded-3xl backdrop-blur-sm hover:shadow-[0_0_30px_rgba(29,185,84,0.1)] transition-all duration-300">
+            <Users className="h-12 w-12 text-[#1DB954] mb-6" />
+            <h3 className="text-2xl font-bold mb-4">Share & Compare</h3>
+            <p className="text-[#A1A1A1] leading-relaxed">
+              Share your music summary on social media and compare your taste with friends.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-800 py-8">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-[#A1A1A1]">Made with ❤️ for music lovers. Not affiliated with Spotify.</p>
+        </div>
       </footer>
     </div>
-  );
+  )
 }
