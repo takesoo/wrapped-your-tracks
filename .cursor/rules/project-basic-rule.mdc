@@ -1,0 +1,38 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# プロジェクト概要
+
+このプロジェクトは、Next.js 15（App Router構成）を用いたSpotify Wrapped風の音楽統計ダッシュボードアプリです。ユーザーの週間音楽リスニング統計を表示し、Spotify連携を模したランディングページ、ローディングアニメーション、サマリーページ（モックデータによる音楽統計・AIペルソナ表示）で構成されています。
+
+## 技術スタック
+- Next.js 15（TypeScript、App Router）
+- Tailwind CSS（カスタムグラデーション/ダークテーマ）
+- shadcn/ui（Button, Card, Badge等のUIコンポーネント）
+- Recharts（グラフ表示）
+- Lucide React（アイコン）
+- Radix UI（shadcn/uiのベース）
+- class-variance-authority（スタイリングパターン）
+
+## ディレクトリ構成
+- `app/`：ページルーティング（`/`, `/loading`, `/summary`）
+- `components/ui/`：UIコンポーネント群
+- `lib/`：ユーティリティ関数
+
+## ルーティング
+- `/`：ランディングページ（Spotify連携ボタン、特徴紹介）
+- `/loading`：ローディングアニメーション（5秒後にサマリーへ遷移）
+- `/summary`：音楽統計・AIペルソナ・グラフ・シェア機能
+
+## データフロー
+- 現状は全てモックデータ（トップアーティスト・トラック・AIペルソナ等）をコンポーネント内で定義
+- ローディングページはダミー処理後にサマリーページへ遷移
+
+## UIテーマ
+- ダークテーマ＋Spotify風カラー（#1DB954, #00FFC2, #33BBFF, #0D0D0D, #A1A1A1）
+- グラデーション・ガラス風エフェクト多用
+
+## 備考
+- 日本語での会話推奨
