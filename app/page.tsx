@@ -35,7 +35,7 @@ export default function LandingPage() {
 
           {/* CTA Button */}
           <div className="mb-16">
-            <Link href="/loading">
+            <Link href="/api/spotify/auth">
               <Button
                 size="lg"
                 className="bg-[#1DB954] hover:bg-[#1ed760] text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(29,185,84,0.5)] hover:scale-105"
