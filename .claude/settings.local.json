@@ -8,7 +8,11 @@
       "Bash(find:*)",
       "Bash(ls:*)",
       "Bash(npm run lint)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npx tsc:*)",
+      "WebFetch(domain:next-auth.js.org)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
