@@ -32,8 +32,9 @@
 - **Class Variance Authority** - コンポーネントスタイリングパターン
 
 ### 認証とAPI統合
-- **直接的なOAuth 2.0実装** (next-authは使用しない)
-- `/api/spotify/`内のカスタムSpotify認証フロー
+- **NextAuth 4.24.11を使用したSpotify OAuth実装**
+- `/pages/api/auth/[...nextauth].ts`でNextAuthハンドラーを実装
+- `/lib/auth.ts`でSpotify Provider設定
 - AIペルソナ生成のためのOpenAI GPT-4o統合
 - ユーザーデータ取得のための実際のSpotify API統合
 
@@ -51,9 +52,7 @@
 - `/summary` - 実際のSpotifyデータ、チャート、AIペルソナを表示するメイン結果ページ
 
 ### APIルート
-- `/api/spotify/auth` - Spotify OAuthフローを開始
-- `/api/spotify/callback` - OAuthコールバックとトークン交換を処理
-- `/api/spotify/top-tracks` - ユーザーのトップトラックとアーティストを取得
+- `/pages/api/auth/[...nextauth].ts` - NextAuth認証ハンドラー（Spotify OAuth）
 - `/api/summary` - 統合された音楽サマリーデータを提供
 - `/api/ai/persona` - 音楽データに基づいてAIペルソナを生成
 
@@ -65,7 +64,7 @@
 
 ### データフロー
 アプリケーションは実際のSpotifyデータとモックデータの両方を処理：
-- OAuth認証はAPI呼び出し用のトークンを保存
+- NextAuthによるSpotify OAuth認証でアクセストークンを管理
 - ローディングページはSpotify APIから実際のユーザーデータを取得
 - AIペルソナ生成は音楽嗜好分析でOpenAI GPT-4oを使用
 - サマリーページはAI生成の洞察と統合された実際のデータを表示
@@ -84,9 +83,11 @@
 
 ```env
 SPOTIFY_CLIENT_ID=your_spotify_client_id_here
-SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here  
-SPOTIFY_REDIRECT_URI=http://localhost:3000/api/spotify/callback
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret_here
 OPENAI_API_KEY=your_openai_api_key_here
+NODE_ENV=development
 ```
 
 ## 個人設定
