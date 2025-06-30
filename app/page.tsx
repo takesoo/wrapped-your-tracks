@@ -1,9 +1,26 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Music, Sparkles, TrendingUp, Users } from 'lucide-react';
-import Link from 'next/link';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function LandingPage() {
+  const { data: _session, status } = useSession();
+  const router = useRouter();
+
+  const handleStartAnalyzing = async () => {
+    if (status === 'authenticated') {
+      // 既に認証済みの場合は直接ローディングページに遷移
+      router.push('/loading');
+    } else {
+      // 未認証の場合は認証を開始
+      await signIn('spotify', { callbackUrl: '/loading' });
+    }
+  };
+
+  const isLoading = status === 'loading';
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       {/* Navigation */}
@@ -28,22 +45,24 @@ export default function LandingPage() {
               Your Week in Music
             </h1>
             <p className="text-xl md:text-2xl text-[#A1A1A1] mb-8 leading-relaxed">
-              Discover your weekly listening patterns, top artists, and get an AI-generated music persona that captures
-              your unique taste.
+              Discover your weekly listening patterns, top artists, and get an AI-generated music persona that captures your unique taste.
             </p>
           </div>
 
           {/* CTA Button */}
           <div className="mb-16">
-            <Link href="/api/spotify/auth">
-              <Button
-                size="lg"
-                className="bg-[#1DB954] hover:bg-[#1ed760] text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(29,185,84,0.5)] hover:scale-105"
-              >
-                <Music className="mr-2 h-5 w-5" />
-                Connect with Spotify
-              </Button>
-            </Link>
+            <Button
+              size="lg"
+              onClick={handleStartAnalyzing}
+              disabled={isLoading}
+              className="bg-[#1DB954] hover:bg-[#1ed760] text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(29,185,84,0.5)] hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Music className="mr-2 h-5 w-5" />
+              {isLoading
+                ? 'Loading...'
+                : 'Start Analyzing'
+              }
+            </Button>
           </div>
 
           {/* Preview Image */}
