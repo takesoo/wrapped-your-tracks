@@ -25,7 +25,9 @@
 
 ### 主要な依存関係
 - **@spotify/web-api-ts-sdk** - Spotify Web API統合
-- **OpenAI** - AIペルソナ生成
+- **@openai/agents** - AIエージェント統合によるペルソナ生成
+- **axios** - HTTP通信ライブラリ（統一されたエラーハンドリング付き）
+- **SWR** - データフェッチングとキャッシュ管理
 - **Recharts** - データ可視化チャート
 - **Lucide React** - アイコン
 - **Radix UI** - shadcn/uiのベースコンポーネント
@@ -35,7 +37,7 @@
 - **NextAuth 4.24.11を使用したSpotify OAuth実装**
 - `/pages/api/auth/[...nextauth].ts`でNextAuthハンドラーを実装
 - `/lib/auth.ts`でSpotify Provider設定
-- AIペルソナ生成のためのOpenAI GPT-4o統合
+- AIペルソナ生成のためのOpenAI GPT-4o統合（@openai/agents使用）
 - ユーザーデータ取得のための実際のSpotify API統合
 
 ### UIテーマ
@@ -53,31 +55,40 @@
 
 ### APIルート
 - `/pages/api/auth/[...nextauth].ts` - NextAuth認証ハンドラー（Spotify OAuth）
+- `/api/recently-played` - 過去50件の視聴履歴と整形済みペルソナデータを提供
+- `/api/ai/persona` - 音楽データに基づいてAIペルソナを生成（@openai/agents使用）
 - `/api/summary` - 統合された音楽サマリーデータを提供
-- `/api/ai/persona` - 音楽データに基づいてAIペルソナを生成
 
 ### コンポーネントアーキテクチャ
 - カスタムスタイリングでshadcn/uiコンポーネント（Button、Card、Badge）を使用
 - コンポーネントは`components/ui/`に配置
-- パスエイリアス設定: `@/components`、`@/lib/utils`
+- パスエイリアス設定: `@/components`、`@/lib/utils`、`@/hooks`
 - 全コンポーネントはTailwindを使用してスタイリング（グラデーションとグラスモーフィズム効果を多用）
 
-### データフロー
-アプリケーションは実際のSpotifyデータとモックデータの両方を処理：
+### データフローとカスタムhooks
+アプリケーションは実際のSpotifyデータを効率的に処理：
 - NextAuthによるSpotify OAuth認証でアクセストークンを管理
-- ローディングページはSpotify APIから実際のユーザーデータを取得
-- AIペルソナ生成は音楽嗜好分析でOpenAI GPT-4oを使用
-- サマリーページはAI生成の洞察と統合された実際のデータを表示
+- **カスタムhooksアーキテクチャ**:
+  - `useSpotifyData`: Spotify API通信（axios使用、リトライ機能付き）
+  - `usePersonaGeneration`: AIペルソナ生成（30分キャッシュ）
+  - `useLoadingProgress`: プログレス計算とローディング状態管理
+  - `useSessionStorage`: デバウンス付きストレージ管理
+- SWRによるインテリジェントキャッシュとエラーハンドリング
+- axiosによる統一されたHTTP通信とエラーハンドリング
 
 ### 型システム
-`lib/types.ts`の包括的なTypeScript定義：
+`lib/spotify-types.ts`の包括的なTypeScript定義：
 - Spotify APIレスポンス型
 - AIペルソナと音楽洞察インターフェース
 - ユーザーデータ集約型
+- Loading状態とプログレス管理型
+- カスタムhooks用の型定義
 
 ### ユーティリティ関数
 - `lib/spotify-utils.ts` - Spotify APIヘルパー、トークンリフレッシュ、データフォーマット
 - `lib/utils.ts` - 一般的なユーティリティ関数とTailwindクラスのマージ
+- `lib/axios.ts` - axios設定とインターセプター（タイムアウト、エラーハンドリング）
+- `lib/debounce.ts` - パフォーマンス最適化用デバウンス関数
 
 ## 必要な環境変数
 
@@ -89,6 +100,26 @@ NEXTAUTH_SECRET=your_nextauth_secret_here
 OPENAI_API_KEY=your_openai_api_key_here
 NODE_ENV=development
 ```
+
+## 最新の技術仕様
+
+### HTTP通信
+- **axios**を使用した統一されたHTTP通信
+- インターセプターによる自動エラーハンドリング
+- 開発環境でのリクエスト/レスポンスログ
+- 30秒タイムアウト設定
+
+### データフェッチング
+- **SWR**によるデータフェッチングとキャッシュ管理
+- カスタムhooksによる関心の分離
+- エラーリトライとキャッシュ戦略の最適化
+- TypeScript型安全性の確保
+
+### AIペルソナ生成
+- **@openai/agents**による高度なAI統合
+- 50件の視聴履歴ベースでの分析
+- 時間帯、リピート傾向、多様性スコア等の詳細な洞察
+- 150-200文字の日本語ペルソナ生成
 
 ## 個人設定
 - 日本語で会話してください

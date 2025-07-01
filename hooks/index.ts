@@ -5,4 +5,4 @@ export { useLoadingProgress } from './useLoadingProgress';
 export { useSessionStorage } from './useSessionStorage';
 
 // 型定義の再エクスポート
-export type { LoadingState, LoadingStep } from '@/lib/spotify-types';
+export type { LoadingState, LoadingStep, PersonaData } from '@/lib/spotify-types';

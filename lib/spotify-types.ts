@@ -58,3 +58,21 @@ export interface LoadingStep {
   done: boolean;
   label: string;
 }
+
+// AI Persona関連の型定義
+export interface PersonaData {
+  persona: string;
+  insights: {
+    tracksAnalyzed: number;
+    uniqueArtists: number;
+    uniqueAlbums: number;
+    timeDistribution: {
+      morning: number;
+      afternoon: number;
+      evening: number;
+      night: number;
+    };
+    repeatTracks: number;
+    diversityScore: number;
+  };
+}
