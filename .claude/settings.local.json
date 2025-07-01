@@ -12,8 +12,10 @@
       "mcp__ide__getDiagnostics",
       "Bash(npx tsc:*)",
       "WebFetch(domain:next-auth.js.org)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "WebFetch(domain:openai.github.io)"
     ],
     "deny": []
-  }
+  },
+  "preferredNotifChannel": "terminal_bell"
 }

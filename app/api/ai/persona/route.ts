@@ -1,123 +1,104 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { Agent, run } from '@openai/agents';
+import type { PersonaRequest } from '@/lib/spotify-types';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || 'your_openai_api_key_here',
+// ペルソナ生成エージェント（50件の視聴履歴ベース）
+const personaAgent = new Agent({
+  name: 'MusicPersonaAnalyst',
+  instructions: `あなたは音楽分析の専門家です。ユーザーの過去50件の視聴履歴から個性的なペルソナを作成してください。
+  
+  以下の要素を含む、魅力的で個性的なペルソナを150-200文字で日本語で作成してください：
+  - 視聴パターンの分析（時間帯、頻度、リピート傾向等）
+  - 音楽的嗜好の特徴
+  - 性格的特徴の推測
+  - ユニークで親しみやすい表現
+  - ポジティブなトーン`,
+  model: 'gpt-4o',
 });
-
-interface SpotifyTrack {
-  id: string;
-  name: string;
-  artists: { id: string; name: string }[];
-  album: { id: string; name: string };
-}
-
-interface SpotifyArtist {
-  id: string;
-  name: string;
-  genres: string[];
-  popularity: number;
-}
-
-interface PersonaRequest {
-  topTracks: SpotifyTrack[];
-  topArtists: SpotifyArtist[];
-}
 
 export async function POST(request: NextRequest) {
   try {
     const body: PersonaRequest = await request.json();
-    const { topTracks, topArtists } = body;
+    const { recentTracks } = body;
 
-    if (!topTracks || !topArtists) {
+    if (!recentTracks || !Array.isArray(recentTracks) || recentTracks.length === 0) {
       return NextResponse.json(
-        { error: 'Missing required data: topTracks and topArtists' },
+        { error: 'Missing required data: recentTracks (50件の視聴履歴)' },
         { status: 400 },
       );
     }
 
-    // 音楽データの分析
-    const artistNames = topArtists.map(artist => artist.name);
-    const trackNames = topTracks.map(track =>
-      `${track.name} by ${track.artists[0]?.name || 'Unknown'}`,
+    // 最大50件に制限
+    const tracks = recentTracks.slice(0, 50);
+
+    // 視聴履歴データの分析
+    const trackNames = tracks.map(item =>
+      `${item.track.name} by ${item.track.artists[0]?.name || 'Unknown'}`,
     );
-    const genres = [...new Set(topArtists.flatMap(artist => artist.genres))];
-    const avgPopularity = topArtists.reduce((sum, artist) => sum + artist.popularity, 0) / topArtists.length;
 
-    // プロンプトの作成
-    const prompt = `
-あなたは音楽の専門家です。以下のユーザーの週間音楽データを分析して、その人の音楽的ペルソナを日本語で生成してください。
+    const artistNames = [...new Set(tracks.map(item => item.track.artists[0]?.name || 'Unknown'))];
+    const albumNames = [...new Set(tracks.map(item => item.track.album.name))];
 
-トップアーティスト: ${artistNames.join(', ')}
-トップトラック: ${trackNames.join(', ')}
-主要ジャンル: ${genres.slice(0, 10).join(', ')}
-平均人気度: ${Math.round(avgPopularity)}
+    // 時間帯分析
+    const playTimes = tracks.map(item => new Date(item.played_at).getHours());
+    const morningPlays = playTimes.filter(hour => hour >= 6 && hour < 12).length;
+    const afternoonPlays = playTimes.filter(hour => hour >= 12 && hour < 18).length;
+    const eveningPlays = playTimes.filter(hour => hour >= 18 && hour < 24).length;
+    const nightPlays = playTimes.filter(hour => hour >= 0 && hour < 6).length;
 
-以下の要素を含む、魅力的で個性的なペルソナを150-200文字で作成してください：
-- 音楽的傾向の分析
-- 性格的特徴の推測
-- ユニークで親しみやすい表現
-- ポジティブなトーン
+    // リピート分析
+    const trackCounts = tracks.reduce((acc, item) => {
+      const key = `${item.track.name}_${item.track.artists[0]?.name}`;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    const repeatTracks = Object.entries(trackCounts).filter(([, count]) => count > 1);
+
+    // ペルソナ生成プロンプト
+    const personaPrompt = `
+以下のユーザーの過去50件の視聴履歴を分析して、その人の音楽的ペルソナを生成してください。
+
+視聴楽曲（最新50件）:
+${trackNames.slice(0, 20).join('\n')}
+${trackNames.length > 20 ? '...他' + (trackNames.length - 20) + '件' : ''}
+
+アーティスト数: ${artistNames.length}組
+アルバム数: ${albumNames.length}枚
+
+視聴時間帯:
+- 朝 (6-12時): ${morningPlays}回
+- 昼 (12-18時): ${afternoonPlays}回  
+- 夜 (18-24時): ${eveningPlays}回
+- 深夜 (0-6時): ${nightPlays}回
+
+リピート楽曲: ${repeatTracks.length}曲
 
 例: "あなたは感性豊かな音楽探検家です。メジャーからインディーまで幅広く聴き、新しい音楽への好奇心が旺盛。深夜に一人で音楽に浸る時間を大切にし、歌詞の世界観を深く味わうタイプ。友人には隠れた名曲を教えてくれる、音楽界のトレジャーハンターです。"
 `;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content: 'あなたは音楽分析の専門家で、ユーザーの音楽的嗜好から個性的なペルソナを作成することができます。日本語で魅力的で親しみやすいペルソナを作成してください。',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      max_tokens: 300,
-      temperature: 0.8,
-    });
-
-    const persona = completion.choices[0]?.message?.content;
-
-    if (!persona) {
-      throw new Error('Failed to generate persona');
-    }
-
-    // 音楽スタイルの分析も追加
-    const styleAnalysis = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content: '音楽データから簡潔なスタイル分析を日本語で作成してください。',
-        },
-        {
-          role: 'user',
-          content: `以下の音楽データから、この人の音楽スタイルを一言で表現してください（30文字以内）：
-          ジャンル: ${genres.slice(0, 5).join(', ')}
-          人気度: ${Math.round(avgPopularity)}`,
-        },
-      ],
-      max_tokens: 50,
-      temperature: 0.7,
-    });
-
-    const musicStyle = styleAnalysis.choices[0]?.message?.content || '多様な音楽愛好家';
+    // エージェント実行
+    const personaResult = await run(personaAgent, personaPrompt);
+    const persona = personaResult.finalOutput;
 
     return NextResponse.json({
       persona,
-      musicStyle,
       insights: {
-        topGenres: genres.slice(0, 5),
-        averagePopularity: Math.round(avgPopularity),
-        diversityScore: genres.length,
-        topArtistsCount: topArtists.length,
-        topTracksCount: topTracks.length,
+        tracksAnalyzed: tracks.length,
+        uniqueArtists: artistNames.length,
+        uniqueAlbums: albumNames.length,
+        timeDistribution: {
+          morning: morningPlays,
+          afternoon: afternoonPlays,
+          evening: eveningPlays,
+          night: nightPlays,
+        },
+        repeatTracks: repeatTracks.length,
+        diversityScore: Math.round((artistNames.length / tracks.length) * 100),
       },
     });
 
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error generating AI persona:', error);
 
     if (error instanceof Error && error.message.includes('API key')) {

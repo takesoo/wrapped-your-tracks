@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { createSpotifySDK } from '@/lib/spotify-utils';
+import type { RecentlyPlayedResponse, PersonaTrackItem } from '@/lib/spotify-types';
 
 export async function GET(_request: NextRequest) {
   try {
@@ -43,10 +44,26 @@ export async function GET(_request: NextRequest) {
       },
     }));
 
-    return NextResponse.json({
+    // Persona API用の形式も同時に生成
+    const personaTracks: PersonaTrackItem[] = tracks.map((item) => ({
+      track: {
+        id: item.track.id,
+        name: item.track.name,
+        artists: item.track.artists.map((artist) => ({ name: artist.name })),
+        album: { name: item.track.album.name },
+      },
+      played_at: item.playedAt,
+    }));
+
+    const response: RecentlyPlayedResponse = {
       tracks,
       total: recentlyPlayed.total || tracks.length,
       limit: recentlyPlayed.limit || 50,
+    };
+
+    return NextResponse.json({
+      ...response,
+      personaTracks, // Persona API用のデータも含める
     });
 
   } catch (error) {
