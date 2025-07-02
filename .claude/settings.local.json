@@ -13,7 +13,9 @@
       "Bash(npx tsc:*)",
       "WebFetch(domain:next-auth.js.org)",
       "Bash(git add:*)",
-      "WebFetch(domain:openai.github.io)"
+      "WebFetch(domain:openai.github.io)",
+      "Bash(grep:*)",
+      "Bash(rg:*)"
     ],
     "deny": []
   },

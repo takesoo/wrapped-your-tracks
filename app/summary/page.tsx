@@ -1,37 +1,133 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Music, Share2, RotateCcw, Crown, Play, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
-
-// Mock data
-const topArtists = [
-  { name: 'The Weeknd', plays: 47, rank: 1 },
-  { name: 'Daft Punk', plays: 32, rank: 2 },
-  { name: 'Tame Impala', plays: 28, rank: 3 },
-  { name: 'Arctic Monkeys', plays: 24, rank: 4 },
-  { name: 'Radiohead', plays: 19, rank: 5 },
-];
-
-const topTracks = [
-  { name: 'Blinding Lights', artist: 'The Weeknd', plays: 12 },
-  { name: 'One More Time', artist: 'Daft Punk', plays: 9 },
-  { name: 'The Less I Know The Better', artist: 'Tame Impala', plays: 8 },
-  { name: 'Do I Wanna Know?', artist: 'Arctic Monkeys', plays: 7 },
-  { name: 'Paranoid Android', artist: 'Radiohead', plays: 6 },
-];
-
-const chartData = topArtists.map((artist) => ({
-  name: artist.name.split(' ')[0], // Shortened for chart
-  plays: artist.plays,
-}));
+import type { RecentlyPlayedResponse, PersonaData } from '@/lib/spotify-types';
 
 const colors = ['#1DB954', '#00FFC2', '#33BBFF', '#FF6B6B', '#FFD93D'];
 
+interface ArtistStats {
+  name: string;
+  plays: number;
+  rank: number;
+}
+
+interface TrackStats {
+  name: string;
+  artist: string;
+  plays: number;
+}
+
 export default function SummaryPage() {
+  const router = useRouter();
+  const [spotifyData, setSpotifyData] = useState<RecentlyPlayedResponse | null>(null);
+  const [persona, setPersona] = useState<PersonaData | null>(null);
+  const [topArtists, setTopArtists] = useState<ArtistStats[]>([]);
+  const [topTracks, setTopTracks] = useState<TrackStats[]>([]);
+  const [totalHours, setTotalHours] = useState(0);
+
+  useEffect(() => {
+    // sessionStorageからデータを取得
+    const recentTracksData = sessionStorage.getItem('recentTracks');
+    const personaData = sessionStorage.getItem('persona');
+
+    if (!recentTracksData || !personaData) {
+      router.push('/');
+      return;
+    }
+
+    try {
+      const parsedSpotifyData = JSON.parse(recentTracksData) as RecentlyPlayedResponse;
+      const parsedPersona = JSON.parse(personaData) as PersonaData;
+
+      setSpotifyData(parsedSpotifyData);
+      setPersona(parsedPersona);
+
+      // アーティスト統計を計算
+      const artistMap = new Map<string, number>();
+      parsedSpotifyData.tracks.forEach((item) => {
+        const artistName = item.track.artists[0]?.name || 'Unknown Artist';
+        artistMap.set(artistName, (artistMap.get(artistName) || 0) + 1);
+      });
+
+      const sortedArtists = Array.from(artistMap.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map((entry, index) => ({
+          name: entry[0],
+          plays: entry[1],
+          rank: index + 1,
+        }));
+      setTopArtists(sortedArtists);
+
+      // トラック統計を計算
+      const trackMap = new Map<string, { artist: string; plays: number }>();
+      parsedSpotifyData.tracks.forEach((item) => {
+        const trackKey = item.track.name;
+        const artistName = item.track.artists[0]?.name || 'Unknown Artist';
+
+        if (!trackMap.has(trackKey)) {
+          trackMap.set(trackKey, { artist: artistName, plays: 0 });
+        }
+        const stats = trackMap.get(trackKey)!;
+        stats.plays += 1;
+      });
+
+      const sortedTracks = Array.from(trackMap.entries())
+        .sort((a, b) => b[1].plays - a[1].plays)
+        .slice(0, 5)
+        .map((entry) => ({
+          name: entry[0],
+          artist: entry[1].artist,
+          plays: entry[1].plays,
+        }));
+      setTopTracks(sortedTracks);
+
+      // 合計時間を計算
+      const totalMs = parsedSpotifyData.tracks.reduce((acc, item) => acc + item.track.duration_ms, 0);
+      setTotalHours(Math.round((totalMs / (1000 * 60 * 60)) * 10) / 10);
+    } catch (error) {
+      console.error('Failed to parse data:', error);
+      router.push('/');
+    }
+  }, [router]);
+
+  if (!spotifyData || !persona) {
+    return null;
+  }
+
+  const chartData = topArtists.map((artist) => ({
+    name: artist.name.split(' ')[0], // Shortened for chart
+    plays: artist.plays,
+  }));
+
+  const genres = ['Electronic', 'Alternative Rock', 'Atmospheric', 'Indie'];
+  const genreColors = ['#1DB954', '#33BBFF', '#00FFC2', '#FF6B6B'];
+
+  const handleReanalyze = () => {
+    sessionStorage.clear();
+    router.push('/');
+  };
+
+  const handleShare = () => {
+    const text = `🎵 私の今週の音楽サマリー\n\nAI音楽ペルソナ: ${persona.persona}\n\n聴いた曲数: ${spotifyData.total}曲\n視聴時間: ${totalHours}時間\nユニークアーティスト: ${persona.insights.uniqueArtists}人\n\n#SpotifyWrapped #音楽ペルソナ`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Spotify Weekly Summary',
+        text: text,
+      });
+    } else {
+      navigator.clipboard.writeText(text);
+      alert('クリップボードにコピーしました！');
+    }
+  };
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       {/* Header */}
@@ -45,13 +141,22 @@ export default function SummaryPage() {
               <span className="text-xl font-bold">SpotifyWrapped</span>
             </Link>
             <div className="flex space-x-3">
-              <Button variant="outline" size="sm" className="border-gray-700 hover:bg-gray-800">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-gray-700 hover:bg-gray-800"
+                onClick={handleReanalyze}
+              >
                 <RotateCcw className="h-4 w-4 mr-2" />
-                Re-analyze
+                再分析
               </Button>
-              <Button size="sm" className="bg-[#1DB954] hover:bg-[#1ed760] text-black">
+              <Button
+                size="sm"
+                className="bg-[#1DB954] hover:bg-[#1ed760] text-black"
+                onClick={handleShare}
+              >
                 <Share2 className="h-4 w-4 mr-2" />
-                Share
+                シェア
               </Button>
             </div>
           </div>
@@ -62,9 +167,60 @@ export default function SummaryPage() {
         {/* Title Section */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-linear-to-r from-white via-[#00FFC2] to-[#33BBFF] bg-clip-text text-transparent">
-            Your Week in Music
+            あなたの今週の音楽
           </h1>
-          <p className="text-xl text-[#A1A1A1]">December 6-12, 2024</p>
+          <p className="text-xl text-[#A1A1A1]">過去{spotifyData.total}曲の分析結果</p>
+        </div>
+
+        {/* AI Music Persona - Moved to top */}
+        <div className="mb-8 max-w-4xl mx-auto">
+          <Card className="bg-linear-to-br from-purple-900/30 via-gray-900/50 to-blue-900/30 border-gray-700 rounded-3xl backdrop-blur-xs">
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold flex items-center justify-center">
+                <Sparkles className="h-8 w-8 text-[#00FFC2] mr-3" />
+                あなたのAI音楽ペルソナ
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <div className="mb-6 px-4">
+                <div className="inline-block max-w-full">
+                  <Badge className="bg-linear-to-r from-[#1DB954] to-[#00FFC2] text-black font-semibold px-6 py-3 text-base md:text-lg rounded-full whitespace-normal text-center">
+                    {persona.persona}
+                  </Badge>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div>
+                  <p className="text-2xl font-bold text-[#1DB954]">{persona.insights.timeDistribution.morning}%</p>
+                  <p className="text-sm text-[#A1A1A1]">朝の視聴</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-[#33BBFF]">{persona.insights.timeDistribution.afternoon}%</p>
+                  <p className="text-sm text-[#A1A1A1]">昼の視聴</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-[#00FFC2]">{persona.insights.timeDistribution.evening}%</p>
+                  <p className="text-sm text-[#A1A1A1]">夕方の視聴</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-purple-400">{persona.insights.timeDistribution.night}%</p>
+                  <p className="text-sm text-[#A1A1A1]">夜の視聴</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap justify-center gap-3">
+                {genres.map((genre, index) => (
+                  <Badge
+                    key={genre}
+                    variant="outline"
+                    className={`border-[${genreColors[index]}] text-[${genreColors[index]}]`}
+                    style={{ borderColor: genreColors[index], color: genreColors[index] }}
+                  >
+                    {genre}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
@@ -73,7 +229,7 @@ export default function SummaryPage() {
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center">
                 <Crown className="h-6 w-6 text-[#1DB954] mr-3" />
-                Top Artists
+                トップアーティスト
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -89,7 +245,7 @@ export default function SummaryPage() {
                       </div>
                       <div>
                         <p className="font-semibold">{artist.name}</p>
-                        <p className="text-sm text-[#A1A1A1]">{artist.plays} plays</p>
+                        <p className="text-sm text-[#A1A1A1]">{artist.plays} 回再生</p>
                       </div>
                     </div>
                     <Play className="h-5 w-5 text-[#A1A1A1] hover:text-[#1DB954] cursor-pointer transition-colors" />
@@ -119,7 +275,7 @@ export default function SummaryPage() {
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center">
                 <Music className="h-6 w-6 text-[#33BBFF] mr-3" />
-                Top Tracks
+                トップトラック
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -136,7 +292,7 @@ export default function SummaryPage() {
                       <div>
                         <p className="font-semibold">{track.name}</p>
                         <p className="text-sm text-[#A1A1A1]">
-                          {track.artist} • {track.plays} plays
+                          {track.artist} • {track.plays} 回再生
                         </p>
                       </div>
                     </div>
@@ -148,58 +304,85 @@ export default function SummaryPage() {
           </Card>
         </div>
 
-        {/* AI Music Persona */}
-        <div className="mt-8 max-w-4xl mx-auto">
-          <Card className="bg-linear-to-br from-purple-900/30 via-gray-900/50 to-blue-900/30 border-gray-700 rounded-3xl backdrop-blur-xs">
-            <CardHeader>
-              <CardTitle className="text-3xl font-bold flex items-center justify-center">
-                <Sparkles className="h-8 w-8 text-[#00FFC2] mr-3" />
-                Your AI Music Persona
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <div className="mb-6">
-                <Badge className="bg-linear-to-r from-[#1DB954] to-[#00FFC2] text-black font-semibold px-4 py-2 text-lg rounded-full">
-                  The Nocturnal Dreamer
-                </Badge>
-              </div>
-              <p className="text-lg leading-relaxed text-[#A1A1A1] mb-6">
-                You&apos;re a sophisticated listener who gravitates toward atmospheric and emotionally rich music. Your taste
-                blends modern electronic elements with classic alternative rock, suggesting someone who appreciates both
-                innovation and timeless artistry. You likely listen to music as a form of escapism and emotional
-                exploration, preferring tracks that create immersive sonic landscapes.
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <Badge variant="outline" className="border-[#1DB954] text-[#1DB954]">
-                  Electronic
-                </Badge>
-                <Badge variant="outline" className="border-[#33BBFF] text-[#33BBFF]">
-                  Alternative Rock
-                </Badge>
-                <Badge variant="outline" className="border-[#00FFC2] text-[#00FFC2]">
-                  Atmospheric
-                </Badge>
-                <Badge variant="outline" className="border-purple-400 text-purple-400">
-                  Indie
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Stats Summary */}
         <div className="mt-8 grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
-            <h3 className="text-3xl font-bold text-[#1DB954] mb-2">127</h3>
-            <p className="text-[#A1A1A1]">Total Tracks Played</p>
+            <h3 className="text-3xl font-bold text-[#1DB954] mb-2">{spotifyData.total}</h3>
+            <p className="text-[#A1A1A1]">聴いた曲数</p>
           </Card>
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
-            <h3 className="text-3xl font-bold text-[#33BBFF] mb-2">8.5</h3>
-            <p className="text-[#A1A1A1]">Hours Listened</p>
+            <h3 className="text-3xl font-bold text-[#33BBFF] mb-2">{totalHours}</h3>
+            <p className="text-[#A1A1A1]">聴いた時間</p>
           </Card>
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
-            <h3 className="text-3xl font-bold text-[#00FFC2] mb-2">23</h3>
-            <p className="text-[#A1A1A1]">Unique Artists</p>
+            <h3 className="text-3xl font-bold text-[#00FFC2] mb-2">{persona.insights.uniqueArtists}</h3>
+            <p className="text-[#A1A1A1]">ユニークアーティスト</p>
+          </Card>
+        </div>
+
+        {/* Additional Stats */}
+        <div className="mt-6 grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
+            <h3 className="text-3xl font-bold text-purple-400 mb-2">{persona.insights.uniqueAlbums}</h3>
+            <p className="text-[#A1A1A1]">ユニークアルバム</p>
+          </Card>
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
+            <h3 className="text-3xl font-bold text-[#FFD93D] mb-2">{persona.insights.repeatTracks}</h3>
+            <p className="text-[#A1A1A1]">リピート曲数</p>
+          </Card>
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
+            <h3 className="text-3xl font-bold text-[#FF6B6B] mb-2">{persona.insights.diversityScore}%</h3>
+            <p className="text-[#A1A1A1]">多様性スコア</p>
+          </Card>
+        </div>
+
+        {/* Recent Listening History */}
+        <div className="mt-8 max-w-4xl mx-auto">
+          <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-3xl backdrop-blur-xs">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold flex items-center">
+                <Music className="h-6 w-6 text-[#FFD93D] mr-3" />
+                最近の視聴履歴（{spotifyData.total}曲）
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {spotifyData.tracks.map((item, index) => {
+                  const playedDate = new Date(item.playedAt);
+                  const timeString = playedDate.toLocaleTimeString('ja-JP', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                  const dateString = playedDate.toLocaleDateString('ja-JP', {
+                    month: 'short',
+                    day: 'numeric',
+                  });
+
+                  return (
+                    <div
+                      key={`${item.track.id}-${index}`}
+                      className="flex items-center justify-between p-3 rounded-xl bg-gray-800/30 hover:bg-gray-800/50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-3 flex-1 min-w-0">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-700 text-xs font-medium text-gray-400">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{item.track.name}</p>
+                          <p className="text-sm text-[#A1A1A1] truncate">
+                            {item.track.artists[0]?.name} • {item.track.album.name}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right ml-4">
+                        <p className="text-sm text-[#A1A1A1]">{timeString}</p>
+                        <p className="text-xs text-gray-500">{dateString}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
           </Card>
         </div>
       </div>
