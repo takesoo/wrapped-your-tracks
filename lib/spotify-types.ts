@@ -61,7 +61,10 @@ export interface LoadingStep {
 
 // AI Persona関連の型定義
 export interface PersonaData {
-  persona: string;
+  persona: {
+    title: string;
+    description: string;
+  };
   insights: {
     tracksAnalyzed: number;
     uniqueArtists: number;

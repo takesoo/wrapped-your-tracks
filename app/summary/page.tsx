@@ -116,7 +116,9 @@ export default function SummaryPage() {
   };
 
   const handleShare = () => {
-    const text = `🎵 私の今週の音楽サマリー\n\nAI音楽ペルソナ: ${persona.persona}\n\n聴いた曲数: ${spotifyData.total}曲\n視聴時間: ${totalHours}時間\nユニークアーティスト: ${persona.insights.uniqueArtists}人\n\n#SpotifyWrapped #音楽ペルソナ`;
+    const personaTitle = typeof persona.persona === 'string' ? persona.persona : persona.persona.title;
+    const personaDescription = typeof persona.persona === 'string' ? '' : persona.persona.description;
+    const text = `🎵 私の今週の音楽サマリー\n\nAI音楽ペルソナ: ${personaTitle}\n${personaDescription}\n\n聴いた曲数: ${spotifyData.total}曲\n視聴時間: ${totalHours}時間\nユニークアーティスト: ${persona.insights.uniqueArtists}人\n\n#SpotifyWrapped #音楽ペルソナ`;
 
     if (navigator.share) {
       navigator.share({
@@ -183,11 +185,12 @@ export default function SummaryPage() {
             </CardHeader>
             <CardContent className="text-center">
               <div className="mb-6 px-4">
-                <div className="inline-block max-w-full">
-                  <Badge className="bg-linear-to-r from-[#1DB954] to-[#00FFC2] text-black font-semibold px-6 py-3 text-base md:text-lg rounded-full whitespace-normal text-center">
-                    {persona.persona}
-                  </Badge>
-                </div>
+                <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-linear-to-r from-[#1DB954] via-[#00FFC2] to-[#33BBFF] bg-clip-text text-transparent">
+                  {typeof persona.persona === 'string' ? persona.persona : persona.persona.title}
+                </h2>
+                <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
+                  {typeof persona.persona === 'string' ? '' : persona.persona.description}
+                </p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div>
