@@ -29,7 +29,7 @@ const personaAgent = new Agent({
   - 専門用語は使わない
   - 誰もが「それ私だ！」と思える内容に
   - 必ず純粋なJSON文字列のみを返す（マークダウンやコードブロックは使用しない）`,
-  model: 'gpt-4o',
+  model: 'gpt-4o-mini',
 });
 
 export async function POST(request: NextRequest) {
