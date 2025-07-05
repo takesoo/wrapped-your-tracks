@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Music, Share2, RotateCcw, Crown, Play, Sparkles } from 'lucide-react';
+import { Music, RotateCcw, Crown, Play, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import type { RecentlyPlayedResponse, PersonaData } from '@/lib/spotify-types';
@@ -115,21 +115,27 @@ export default function SummaryPage() {
     router.push('/');
   };
 
-  const handleShare = () => {
-    const personaTitle = typeof persona.persona === 'string' ? persona.persona : persona.persona.title;
-    const personaDescription = typeof persona.persona === 'string' ? '' : persona.persona.description;
-    const text = `🎵 私の今週の音楽サマリー\n\nAI音楽ペルソナ: ${personaTitle}\n${personaDescription}\n\n聴いた曲数: ${spotifyData.total}曲\n視聴時間: ${totalHours}時間\nユニークアーティスト: ${persona.insights.uniqueArtists}人\n\n#SpotifyWrapped #音楽ペルソナ`;
+  // シェア機能は初期リリースでは含めない（機能の段階的リリースのため）
+  // TODO: 今後のアップデートで実装予定
+  // const handleShare = () => {
+  //   const personaTitle = typeof persona.persona === 'string' ? persona.persona : persona.persona.title;
 
-    if (navigator.share) {
-      navigator.share({
-        title: 'My Spotify Weekly Summary',
-        text: text,
-      });
-    } else {
-      navigator.clipboard.writeText(text);
-      alert('クリップボードにコピーしました！');
-    }
-  };
+  //   // Twitterの文字数制限を考慮したテキスト作成（140文字）
+  //   const baseText = `🎵 私の今週の音楽サマリー\n\nAI音楽ペルソナ: ${personaTitle}`;
+  //   const stats = `\n\n聴いた曲数: ${spotifyData.total}曲`;
+  //   const hashtags = '\n\n#SpotifyWrapped #音楽ペルソナ';
+
+  //   // 140文字に収まるように調整
+  //   let text = baseText;
+  //   if ((text + stats + hashtags).length <= 140) {
+  //     text += stats;
+  //   }
+  //   text += hashtags;
+
+  //   // Twitter Intent URLを使用してシェア
+  //   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+  //   window.open(tweetUrl, '_blank', 'width=550,height=420');
+  // };
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       {/* Header */}
@@ -152,14 +158,15 @@ export default function SummaryPage() {
                 <RotateCcw className="h-4 w-4 mr-2" />
                 再分析
               </Button>
-              <Button
+              {/* シェア機能は初期リリースでは含めない */}
+              {/* <Button
                 size="sm"
                 className="bg-[#1DB954] hover:bg-[#1ed760] text-black"
                 onClick={handleShare}
               >
                 <Share2 className="h-4 w-4 mr-2" />
                 シェア
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
