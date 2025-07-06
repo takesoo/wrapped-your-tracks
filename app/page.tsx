@@ -31,7 +31,7 @@ export default function LandingPage() {
               <div className="h-8 w-8 rounded-lg bg-linear-to-br from-[#1DB954] to-[#00FFC2] flex items-center justify-center">
                 <Music className="h-5 w-5 text-black" />
               </div>
-              <span className="text-xl font-bold">SpotifyWrapped</span>
+              <span className="text-xl font-bold">WrappedYourTracks</span>
             </div>
           </div>
         </div>

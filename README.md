@@ -1,4 +1,4 @@
-# Spotify Wrapped Clone
+# Wrapped Your Tracks
 
 Next.js 15（App Router）を使用したSpotify Wrapped風の音楽統計ダッシュボードアプリです。
 
@@ -42,7 +42,7 @@ NODE_ENV=development
 
 ```bash
 git clone <repository-url>
-cd spotify-wrapped
+cd wrapped-your-tracks
 ```
 
 ### 2. 依存関係のインストール
@@ -79,7 +79,7 @@ npm run dev
 ## 📁 プロジェクト構造
 
 ```
-spotify-wrapped/
+wrapped-your-tracks/
 ├── app/
 │   ├── api/
 │   │   ├── spotify/
