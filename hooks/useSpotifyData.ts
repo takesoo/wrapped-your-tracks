@@ -1,5 +1,6 @@
 import useSWR from 'swr';
-import axios from '@/lib/axios';
+import axios, { AxiosError } from '@/lib/axios';
+import { signIn } from 'next-auth/react';
 import type { RecentlyPlayedResponse, PersonaTrackItem } from '@/lib/spotify-types';
 
 // SWR用のaxiosフェッチャー関数
@@ -28,10 +29,14 @@ export function useSpotifyData(enabled: boolean): UseSpotifyDataReturn {
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      onError: (err: Error) => {
+      onError: async (err: Error) => {
         if (process.env.NODE_ENV === 'development') {
           // eslint-disable-next-line no-console
           console.error('Spotify data fetch failed:', err);
+        }
+        // 401エラー（認証エラー）の場合は再認証を促す
+        if (err instanceof AxiosError && err.response?.status === 401) {
+          await signIn('spotify', { callbackUrl: '/loading' });
         }
       },
       shouldRetryOnError: true,

@@ -43,10 +43,6 @@ export function usePersonaGeneration(tracks: PersonaTrackItem[] | undefined): Us
       errorRetryCount: 2,
       // リトライ間隔を設定（AI処理は時間がかかるため長めに）
       errorRetryInterval: 3000, // 3秒から開始
-      // ペルソナ生成は重い処理なので、成功したらキャッシュを長時間保持
-      dedupingInterval: 30 * 60 * 1000, // 30分
-      // ペルソナは一度生成されたら変更されないので、stale-while-revalidateを無効化
-      revalidateIfStale: false,
     },
   );
 

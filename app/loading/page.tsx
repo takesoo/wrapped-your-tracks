@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import { Music, Loader2 } from 'lucide-react';
 import {
   useSpotifyData,
@@ -55,12 +55,31 @@ export default function LoadingPage() {
     }
   }, [progress, router]);
 
-  // 認証チェック
-  useEffect(() => {
+  // 認証とトークン期限チェック
+  const checkAuthAndToken = useCallback(async () => {
     if (!session) {
-      router.push('/');
+      // セッションがない場合は認証開始
+      await signIn('spotify', { callbackUrl: '/loading' });
+      return;
     }
-  }, [session, router]);
+
+    // トークンの有効期限をチェック（expiresAtはUNIXタイムスタンプ（秒））
+    if (session.expiresAt) {
+      const expiresAtMs = Number(session.expiresAt) * 1000;
+      const now = Date.now();
+      const fiveMinutesMs = 5 * 60 * 1000;
+
+      // 期限切れまたは期限が5分以内の場合は再認証
+      if (expiresAtMs <= now + fiveMinutesMs) {
+        await signIn('spotify', { callbackUrl: '/loading' });
+      }
+    }
+  }, [session]);
+
+  // 認証チェックの実行
+  useEffect(() => {
+    checkAuthAndToken();
+  }, [checkAuthAndToken]);
 
   // エラー表示
   const error = tracksError || (personaError && !persona);

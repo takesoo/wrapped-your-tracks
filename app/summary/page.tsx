@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { mutate } from 'swr';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -111,7 +112,20 @@ export default function SummaryPage() {
   const genreColors = ['#1DB954', '#33BBFF', '#00FFC2', '#FF6B6B'];
 
   const handleReanalyze = () => {
+    // SWRのペルソナキャッシュを削除（新しい分析結果を生成するため）
+    mutate(
+      (key) => Array.isArray(key) && key[0] === '/api/ai/persona',
+      undefined,
+      { revalidate: false },
+    );
+
+    // SWRのSpotifyデータキャッシュも削除
+    mutate('/api/recently-played', undefined, { revalidate: false });
+
+    // sessionStorageをクリア
     sessionStorage.clear();
+
+    // トップページへリダイレクト
     router.push('/');
   };
 
