@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { mutate } from 'swr';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +28,7 @@ interface TrackStats {
 
 export default function SummaryPage() {
   const router = useRouter();
+  const t = useTranslations('summary');
   const [spotifyData, setSpotifyData] = useState<RecentlyPlayedResponse | null>(null);
   const [persona, setPersona] = useState<PersonaData | null>(null);
   const [topArtists, setTopArtists] = useState<ArtistStats[]>([]);
@@ -160,7 +162,7 @@ export default function SummaryPage() {
               <div className="h-8 w-8 rounded-lg bg-linear-to-br from-[#1DB954] to-[#00FFC2] flex items-center justify-center">
                 <Music className="h-5 w-5 text-black" />
               </div>
-              <span className="text-xl font-bold">SpotifyWrapped</span>
+              <span className="text-xl font-bold">WrappedYourTracks</span>
             </Link>
             <div className="flex space-x-3">
               <Button
@@ -170,7 +172,7 @@ export default function SummaryPage() {
                 onClick={handleReanalyze}
               >
                 <RotateCcw className="h-4 w-4 mr-2" />
-                再分析
+                {t('reanalyze')}
               </Button>
               {/* シェア機能は初期リリースでは含めない */}
               {/* <Button
@@ -190,9 +192,9 @@ export default function SummaryPage() {
         {/* Title Section */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-linear-to-r from-white via-[#00FFC2] to-[#33BBFF] bg-clip-text text-transparent">
-            あなたの今週の音楽
+            {t('yourWeekInMusic')}
           </h1>
-          <p className="text-xl text-[#A1A1A1]">過去{spotifyData.total}曲の分析結果</p>
+          <p className="text-xl text-[#A1A1A1]">{t('analyzedSongs', { count: spotifyData.total })}</p>
         </div>
 
         {/* AI Music Persona - Moved to top */}
@@ -201,7 +203,7 @@ export default function SummaryPage() {
             <CardHeader>
               <CardTitle className="text-3xl font-bold flex items-center justify-center">
                 <Sparkles className="h-8 w-8 text-[#00FFC2] mr-3" />
-                あなたのAI音楽ペルソナ
+                {t('aiPersona.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-center">
@@ -216,19 +218,19 @@ export default function SummaryPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div>
                   <p className="text-2xl font-bold text-[#1DB954]">{persona.insights.timeDistribution.morning}%</p>
-                  <p className="text-sm text-[#A1A1A1]">朝の視聴</p>
+                  <p className="text-sm text-[#A1A1A1]">{t('timeOfDay.morning')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-[#33BBFF]">{persona.insights.timeDistribution.afternoon}%</p>
-                  <p className="text-sm text-[#A1A1A1]">昼の視聴</p>
+                  <p className="text-sm text-[#A1A1A1]">{t('timeOfDay.afternoon')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-[#00FFC2]">{persona.insights.timeDistribution.evening}%</p>
-                  <p className="text-sm text-[#A1A1A1]">夕方の視聴</p>
+                  <p className="text-sm text-[#A1A1A1]">{t('timeOfDay.evening')}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-purple-400">{persona.insights.timeDistribution.night}%</p>
-                  <p className="text-sm text-[#A1A1A1]">夜の視聴</p>
+                  <p className="text-sm text-[#A1A1A1]">{t('timeOfDay.night')}</p>
                 </div>
               </div>
               <div className="flex flex-wrap justify-center gap-3">
@@ -253,7 +255,7 @@ export default function SummaryPage() {
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center">
                 <Crown className="h-6 w-6 text-[#1DB954] mr-3" />
-                トップアーティスト
+                {t('topArtists.title')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -269,7 +271,7 @@ export default function SummaryPage() {
                       </div>
                       <div>
                         <p className="font-semibold">{artist.name}</p>
-                        <p className="text-sm text-[#A1A1A1]">{artist.plays} 回再生</p>
+                        <p className="text-sm text-[#A1A1A1]">{t('topArtists.plays', { count: artist.plays })}</p>
                       </div>
                     </div>
                     <Play className="h-5 w-5 text-[#A1A1A1] hover:text-[#1DB954] cursor-pointer transition-colors" />
@@ -299,7 +301,7 @@ export default function SummaryPage() {
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center">
                 <Music className="h-6 w-6 text-[#33BBFF] mr-3" />
-                トップトラック
+                {t('topTracks.title')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -316,7 +318,7 @@ export default function SummaryPage() {
                       <div>
                         <p className="font-semibold">{track.name}</p>
                         <p className="text-sm text-[#A1A1A1]">
-                          {track.artist} • {track.plays} 回再生
+                          {t('topTracks.byArtist', { artist: track.artist, plays: track.plays })}
                         </p>
                       </div>
                     </div>
@@ -332,15 +334,15 @@ export default function SummaryPage() {
         <div className="mt-8 grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
             <h3 className="text-3xl font-bold text-[#1DB954] mb-2">{spotifyData.total}</h3>
-            <p className="text-[#A1A1A1]">聴いた曲数</p>
+            <p className="text-[#A1A1A1]">{t('stats.totalSongs')}</p>
           </Card>
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
-            <h3 className="text-3xl font-bold text-[#33BBFF] mb-2">{totalHours}</h3>
-            <p className="text-[#A1A1A1]">聴いた時間</p>
+            <h3 className="text-3xl font-bold text-[#33BBFF] mb-2">{t('stats.hours', { hours: totalHours })}</h3>
+            <p className="text-[#A1A1A1]">{t('stats.totalTime')}</p>
           </Card>
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
             <h3 className="text-3xl font-bold text-[#00FFC2] mb-2">{persona.insights.uniqueArtists}</h3>
-            <p className="text-[#A1A1A1]">ユニークアーティスト</p>
+            <p className="text-[#A1A1A1]">{t('stats.uniqueArtists')}</p>
           </Card>
         </div>
 
@@ -348,15 +350,15 @@ export default function SummaryPage() {
         <div className="mt-6 grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
             <h3 className="text-3xl font-bold text-purple-400 mb-2">{persona.insights.uniqueAlbums}</h3>
-            <p className="text-[#A1A1A1]">ユニークアルバム</p>
+            <p className="text-[#A1A1A1]">{t('stats.uniqueAlbums')}</p>
           </Card>
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
             <h3 className="text-3xl font-bold text-[#FFD93D] mb-2">{persona.insights.repeatTracks}</h3>
-            <p className="text-[#A1A1A1]">リピート曲数</p>
+            <p className="text-[#A1A1A1]">{t('stats.repeatSongs')}</p>
           </Card>
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 rounded-2xl backdrop-blur-xs text-center p-6">
             <h3 className="text-3xl font-bold text-[#FF6B6B] mb-2">{persona.insights.diversityScore}%</h3>
-            <p className="text-[#A1A1A1]">多様性スコア</p>
+            <p className="text-[#A1A1A1]">{t('stats.diversityScore')}</p>
           </Card>
         </div>
 
@@ -366,7 +368,7 @@ export default function SummaryPage() {
             <CardHeader>
               <CardTitle className="text-2xl font-bold flex items-center">
                 <Music className="h-6 w-6 text-[#FFD93D] mr-3" />
-                最近の視聴履歴（{spotifyData.total}曲）
+                {t('recentHistory', { count: spotifyData.total })}
               </CardTitle>
             </CardHeader>
             <CardContent>

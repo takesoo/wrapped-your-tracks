@@ -47,6 +47,7 @@ export interface PersonaTrackItem {
 
 export interface PersonaRequest {
   recentTracks: PersonaTrackItem[];
+  locale?: string;
 }
 
 // Loading状態管理用

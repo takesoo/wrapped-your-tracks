@@ -3,6 +3,7 @@
 import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { Music, Loader2 } from 'lucide-react';
 import {
   useSpotifyData,
@@ -14,6 +15,7 @@ import {
 export default function LoadingPage() {
   const router = useRouter();
   const { data: session } = useSession();
+  const t = useTranslations('loading');
 
   // カスタムhooksでデータ取得
   const {
@@ -91,15 +93,15 @@ export default function LoadingPage() {
             <div className="h-24 w-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-4">
               <Music className="h-12 w-12 text-red-400" />
             </div>
-            <h2 className="text-xl font-semibold mb-4 text-red-400">エラーが発生しました</h2>
+            <h2 className="text-xl font-semibold mb-4 text-red-400">{t('error.title')}</h2>
             <p className="text-[#A1A1A1] text-sm mb-6">
-              {tracksError ? 'Spotifyデータの取得に失敗しました' : 'ペルソナの生成に失敗しました'}
+              {tracksError ? t('error.spotifyFailed') : t('error.personaFailed')}
             </p>
             <button
               onClick={() => window.location.reload()}
               className="px-6 py-3 bg-[#1DB954] text-black font-semibold rounded-full hover:bg-[#1DB954]/90 transition-colors"
             >
-              再試行
+              {t('error.retry')}
             </button>
           </div>
         </div>
@@ -108,11 +110,11 @@ export default function LoadingPage() {
   }
 
   const stepLabels = [
-    'Connecting to Spotify...',
-    'Fetching your listening history...',
-    'Analyzing your music taste...',
-    'Generating your AI persona...',
-    'Preparing your summary...',
+    t('steps.connecting'),
+    t('steps.fetching'),
+    t('steps.analyzing'),
+    t('steps.generating'),
+    t('steps.preparing'),
   ];
 
   return (
@@ -136,7 +138,7 @@ export default function LoadingPage() {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="text-[#A1A1A1] text-sm">{progress}% complete</p>
+          <p className="text-[#A1A1A1] text-sm">{t('progressComplete', { progress })}</p>
         </div>
 
         {/* Current Step */}
@@ -150,8 +152,8 @@ export default function LoadingPage() {
           {process.env.NODE_ENV === 'development' && (
             <div className="text-xs text-[#A1A1A1] mt-2 space-y-1">
               <div>State: {loadingState}</div>
-              {spotifyData && <div>取得済み: {spotifyData.total}曲</div>}
-              {persona && <div>ペルソナ生成済み</div>}
+              {spotifyData && <div>{t('fetchedSongs', { count: spotifyData.total })}</div>}
+              {persona && <div>{t('personaGenerated')}</div>}
               <div>Progress: {progress}%</div>
               <div>Step: {stepLabel}</div>
             </div>

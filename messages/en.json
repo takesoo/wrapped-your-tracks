@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "title": "WrappedYourTracks - Your Week in Music",
+    "description": "Discover your weekly listening patterns and get an AI-generated music persona"
+  },
+  "common": {
+    "loading": "Loading..."
+  },
+  "landing": {
+    "hero": {
+      "title": "Your Week in Music",
+      "subtitle": "Discover your listening patterns and get an AI-generated music persona",
+      "cta": "Start Analyzing",
+      "signIn": "Sign in with Spotify",
+      "preview": "Preview of your personalized music summary"
+    },
+    "features": {
+      "title": "What you'll discover",
+      "topTracks": {
+        "title": "Top Tracks & Artists",
+        "description": "See your most played songs and artists from the past week with beautiful visualizations and play counts"
+      },
+      "aiPersona": {
+        "title": "AI Music Persona",
+        "description": "Get a personalized AI-generated description of your music taste and listening personality"
+      },
+      "share": {
+        "title": "Share & Compare",
+        "description": "Share your music summary on social media and compare your taste with friends"
+      }
+    },
+    "footer": {
+      "madeWith": "Made with ❤️ for music lovers. Not affiliated with Spotify."
+    }
+  },
+  "loading": {
+    "title": "Analyzing your music taste...",
+    "fetchingData": "Fetching your Spotify data",
+    "analyzingPatterns": "Analyzing listening patterns",
+    "generatingPersona": "Generating AI persona",
+    "preparingResults": "Preparing your results",
+    "fetchedSongs": "Fetched: {count} songs",
+    "personaGenerated": "Persona generated",
+    "progressComplete": "{progress}% complete",
+    "steps": {
+      "connecting": "Connecting to Spotify...",
+      "fetching": "Fetching your listening history...",
+      "analyzing": "Analyzing your music taste...",
+      "generating": "Generating your AI persona...",
+      "preparing": "Preparing your summary..."
+    },
+    "error": {
+      "title": "An error occurred",
+      "spotifyFailed": "Failed to fetch Spotify data",
+      "personaFailed": "Failed to generate persona",
+      "retry": "Retry"
+    }
+  },
+  "summary": {
+    "reanalyze": "Re-analyze",
+    "share": "Share",
+    "yourWeekInMusic": "Your Week in Music",
+    "analyzedSongs": "Analysis of past {count} songs",
+    "aiPersona": {
+      "title": "Your AI Music Persona",
+      "musicLoverType": "Music Lover Type",
+      "defaultDescription": "You are a listener with unique musical taste. You enjoy various genres while building your own musical world."
+    },
+    "timeOfDay": {
+      "morning": "Morning listening",
+      "afternoon": "Afternoon listening",
+      "evening": "Evening listening",
+      "night": "Night listening"
+    },
+    "topArtists": {
+      "title": "Top Artists",
+      "plays": "{count} plays"
+    },
+    "topTracks": {
+      "title": "Top Tracks",
+      "byArtist": "{artist} • {plays} plays"
+    },
+    "stats": {
+      "totalSongs": "Songs played",
+      "totalTime": "Listening time",
+      "hours": "{hours}h",
+      "uniqueArtists": "Unique artists",
+      "uniqueAlbums": "Unique albums",
+      "repeatSongs": "Songs on repeat",
+      "diversityScore": "Diversity score"
+    },
+    "recentHistory": "Recent listening history ({count} songs)"
+  }
+}

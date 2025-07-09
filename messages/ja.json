@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "title": "WrappedYourTracks - あなたの今週の音楽",
+    "description": "週間の視聴パターンを発見し、AI生成の音楽ペルソナを取得"
+  },
+  "common": {
+    "loading": "読み込み中..."
+  },
+  "landing": {
+    "hero": {
+      "title": "あなたの今週の音楽",
+      "subtitle": "視聴パターンを発見し、AI生成の音楽ペルソナを取得",
+      "cta": "分析を開始",
+      "signIn": "Spotifyでサインイン",
+      "preview": "パーソナライズされた音楽サマリーのプレビュー"
+    },
+    "features": {
+      "title": "発見できること",
+      "topTracks": {
+        "title": "トップトラック＆アーティスト",
+        "description": "過去1週間で最も再生した曲とアーティストを美しいビジュアライゼーションと再生回数で確認"
+      },
+      "aiPersona": {
+        "title": "AI音楽ペルソナ",
+        "description": "あなたの音楽の好みと視聴パーソナリティのパーソナライズされたAI生成説明を取得"
+      },
+      "share": {
+        "title": "シェア＆比較",
+        "description": "音楽サマリーをソーシャルメディアでシェアして、友達と好みを比較"
+      }
+    },
+    "footer": {
+      "madeWith": "音楽愛好家のために❤️を込めて作りました。Spotifyとは提携していません。"
+    }
+  },
+  "loading": {
+    "title": "あなたの音楽の好みを分析中...",
+    "fetchingData": "Spotifyデータを取得中",
+    "analyzingPatterns": "視聴パターンを分析中",
+    "generatingPersona": "AIペルソナを生成中",
+    "preparingResults": "結果を準備中",
+    "fetchedSongs": "取得済み: {count}曲",
+    "personaGenerated": "ペルソナ生成済み",
+    "progressComplete": "{progress}% 完了",
+    "steps": {
+      "connecting": "Spotifyに接続中...",
+      "fetching": "視聴履歴を取得中...",
+      "analyzing": "音楽の好みを分析中...",
+      "generating": "AIペルソナを生成中...",
+      "preparing": "サマリーを準備中..."
+    },
+    "error": {
+      "title": "エラーが発生しました",
+      "spotifyFailed": "Spotifyデータの取得に失敗しました",
+      "personaFailed": "ペルソナの生成に失敗しました",
+      "retry": "再試行"
+    }
+  },
+  "summary": {
+    "reanalyze": "再分析",
+    "share": "シェア",
+    "yourWeekInMusic": "あなたの今週の音楽",
+    "analyzedSongs": "過去{count}曲の分析結果",
+    "aiPersona": {
+      "title": "あなたのAI音楽ペルソナ",
+      "musicLoverType": "音楽愛好家タイプ",
+      "defaultDescription": "あなたは独特な音楽センスを持つリスナーです。様々なジャンルを楽しみながら、自分だけの音楽世界を築いています。"
+    },
+    "timeOfDay": {
+      "morning": "朝の視聴",
+      "afternoon": "昼の視聴",
+      "evening": "夕方の視聴",
+      "night": "夜の視聴"
+    },
+    "topArtists": {
+      "title": "トップアーティスト",
+      "plays": "{count} 回再生"
+    },
+    "topTracks": {
+      "title": "トップトラック",
+      "byArtist": "{artist} • {plays} 回再生"
+    },
+    "stats": {
+      "totalSongs": "聴いた曲数",
+      "totalTime": "聴いた時間",
+      "hours": "{hours}時間",
+      "uniqueArtists": "ユニークアーティスト",
+      "uniqueAlbums": "ユニークアルバム",
+      "repeatSongs": "リピート曲数",
+      "diversityScore": "多様性スコア"
+    },
+    "recentHistory": "最近の視聴履歴（{count}曲）"
+  }
+}

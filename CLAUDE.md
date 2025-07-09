@@ -32,6 +32,7 @@
 - **Lucide React** - アイコン
 - **Radix UI** - shadcn/uiのベースコンポーネント
 - **Class Variance Authority** - コンポーネントスタイリングパターン
+- **next-intl** - 国際化（i18n）サポート
 
 ### 認証とAPI統合
 - **NextAuth 4.24.11を使用したSpotify OAuth実装**
@@ -119,6 +120,13 @@ NODE_ENV=development
 - 50件の視聴履歴ベースでの分析
 - 時間帯、リピート傾向、多様性スコア等の詳細な洞察
 - 150-200文字の日本語ペルソナ生成
+
+### 多言語対応
+- **next-intl**による国際化対応
+- `app/layout.tsx`でNextIntlClientProviderを設定
+- `getLocale()`、`getMessages()`、`getTranslations()`を使用したサーバーサイドi18n
+- 現在は英語と日本語のみサポート
+- メッセージファイルは`messages/`ディレクトリに配置予定
 
 ## コード品質ガイドライン
 

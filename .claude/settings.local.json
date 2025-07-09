@@ -15,7 +15,8 @@
       "Bash(git add:*)",
       "WebFetch(domain:openai.github.io)",
       "Bash(grep:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "WebFetch(domain:next-intl.dev)"
     ],
     "deny": []
   },

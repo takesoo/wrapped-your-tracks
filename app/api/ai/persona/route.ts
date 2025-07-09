@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     if (!recentTracks || !Array.isArray(recentTracks) || recentTracks.length === 0) {
       return NextResponse.json(
-        { error: 'Missing required data: recentTracks (50件の視聴履歴)' },
+        { error: 'Missing required data: recentTracks' },
         { status: 400 },
       );
     }
