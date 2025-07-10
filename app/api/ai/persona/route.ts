@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Agent, run } from '@openai/agents';
 import type { PersonaRequest } from '@/lib/spotify-types';
+import { getLocale } from 'next-intl/server';
 
 // ペルソナ生成エージェント（50件の視聴履歴ベース）
-const personaAgent = new Agent({
-  name: 'MusicPersonaAnalyst',
-  instructions: `あなたはユーモアセンス抜群の音楽診断士です。ユーザーの視聴履歴から、クスッと笑えて共感できる診断結果を作成してください。
+const createPersonaAgent = (locale: string) => {
+  const isJapanese = locale === 'ja';
+  const instructions = isJapanese
+    ? `あなたはユーモアセンス抜群の音楽診断士です。ユーザーの視聴履歴から、クスッと笑えて共感できる診断結果を作成してください。
   
   重要：以下の形式の純粋なJSON文字列のみを出力してください。コードブロック（\`\`\`）や余分な文字を含めないでください：
   {"title":"〇〇タイプ","description":"詳細な説明文"}
@@ -28,14 +30,44 @@ const personaAgent = new Agent({
   - 堅苦しい分析は避ける
   - 専門用語は使わない
   - 誰もが「それ私だ！」と思える内容に
-  - 必ず純粋なJSON文字列のみを返す（マークダウンやコードブロックは使用しない）`,
-  model: 'gpt-4o-mini',
-});
+  - 必ず純粋なJSON文字列のみを返す（マークダウンやコードブロックは使用しない）`
+    : `You are a witty music personality analyst. Based on the user's listening history, create a humorous and relatable personality diagnosis.
+  
+  IMPORTANT: Output ONLY a pure JSON string in the following format. Do not include code blocks (\`\`\`) or any extra characters:
+  {"title":"The [Type] Type","description":"Detailed description"}
+  
+  Title examples (keep it concise and catchy):
+  - "The Midnight Philosopher Type"
+  - "The Musical Mood Swing Type"
+  - "The Playlist Wanderer Type"
+  - "The Emotional Rollercoaster Type"
+  - "The Musical Commitment Issues Type"
+  
+  Description (150-200 characters) should include:
+  - Relatable behavior patterns from listening trends
+  - Self-deprecating but endearing traits
+  - Use phrases like "tends to...", "the type who..."
+  - Specific behaviors (e.g., "hits shuffle but skips every song anyway")
+  - End with a positive, affectionate note
+  
+  Guidelines:
+  - Avoid stiff analysis
+  - No technical jargon
+  - Make it universally relatable ("that's so me!")
+  - Return ONLY the pure JSON string (no markdown or code blocks)`;
+
+  return new Agent({
+    name: 'MusicPersonaAnalyst',
+    instructions,
+    model: 'gpt-4o-mini',
+  });
+};
 
 export async function POST(request: NextRequest) {
   try {
     const body: PersonaRequest = await request.json();
     const { recentTracks } = body;
+    const locale = await getLocale();
 
     if (!recentTracks || !Array.isArray(recentTracks) || recentTracks.length === 0) {
       return NextResponse.json(
@@ -71,7 +103,8 @@ export async function POST(request: NextRequest) {
     const repeatTracks = Object.entries(trackCounts).filter(([, count]) => count > 1);
 
     // ペルソナ生成プロンプト
-    const personaPrompt = `
+    const personaPrompt = locale === 'ja'
+      ? `
 以下のユーザーの過去50件の視聴履歴を分析して、クスッと笑える診断結果を作成してください。
 
 視聴楽曲（最新50件）:
@@ -97,9 +130,37 @@ ${artistNames.length < 10 ? '- 推しアーティスト一筋' : ''}
 ${nightPlays > morningPlays * 3 ? '- 完全に夜型生活' : ''}
 
 上記の指示に従い、純粋なJSON文字列のみを出力してください。コードブロックやマークダウンは使用しないでください。
+`
+      : `
+Analyze the user's last 50 listening sessions and create a witty personality diagnosis.
+
+Recent Tracks (Latest 50):
+${trackNames.slice(0, 20).join('\n')}
+${trackNames.length > 20 ? '...and ' + (trackNames.length - 20) + ' more' : ''}
+
+Unique Artists: ${artistNames.length}
+Unique Albums: ${albumNames.length}
+
+Listening Times:
+- Morning (6AM-12PM): ${morningPlays} plays ${morningPlays === 0 ? '(sleeps through mornings)' : morningPlays > 10 ? '(early bird)' : ''}
+- Afternoon (12PM-6PM): ${afternoonPlays} plays  
+- Evening (6PM-12AM): ${eveningPlays} plays ${eveningPlays > 20 ? '(night owl)' : ''}
+- Late Night (12AM-6AM): ${nightPlays} plays ${nightPlays > 5 ? '(midnight philosopher)' : ''}
+
+Repeat Tracks: ${repeatTracks.length} ${repeatTracks.length > 10 ? '(heavy repeater)' : repeatTracks.length === 0 ? '(new music explorer)' : ''}
+Diversity Score: ${Math.round((artistNames.length / tracks.length) * 100)}%
+
+Notable Behaviors:
+${repeatTracks.length > 5 ? '- Plays the same songs on repeat' : ''}
+${artistNames.length > 30 ? '- Musical commitment issues' : ''}
+${artistNames.length < 10 ? '- Loyal to favorite artists' : ''}
+${nightPlays > morningPlays * 3 ? '- Complete night owl lifestyle' : ''}
+
+Follow the instructions above and output ONLY a pure JSON string. Do not use code blocks or markdown.
 `;
 
-    // エージェント実行
+    // エージェント作成と実行
+    const personaAgent = createPersonaAgent(locale);
     const personaResult = await run(personaAgent, personaPrompt);
 
     // JSON形式のレスポンスをパース
@@ -115,10 +176,15 @@ ${nightPlays > morningPlays * 3 ? '- 完全に夜型生活' : ''}
       console.error('Failed to parse persona data:', parseError);
       console.error('Raw output:', personaResult.finalOutput);
       // フォールバック
-      personaData = {
-        title: '音楽愛好家タイプ',
-        description: 'あなたは独特な音楽センスを持つリスナーです。様々なジャンルを楽しみながら、自分だけの音楽世界を築いています。',
-      };
+      personaData = locale === 'ja'
+        ? {
+          title: '音楽愛好家タイプ',
+          description: 'あなたは独特な音楽センスを持つリスナーです。様々なジャンルを楽しみながら、自分だけの音楽世界を築いています。',
+        }
+        : {
+          title: 'The Music Explorer Type',
+          description: 'You have a unique taste in music. You enjoy various genres while building your own musical world.',
+        };
     }
 
     return NextResponse.json({
