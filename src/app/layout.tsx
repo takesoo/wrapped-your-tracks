@@ -6,6 +6,7 @@ import { Providers } from '@/components/providers/session-provider';
 import './globals.css';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 import { NextIntlClientProvider } from 'next-intl';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -34,6 +35,7 @@ export default async function RootLayout({
         <Providers session={session}>
           <NextIntlClientProvider messages={messages}>
             {children}
+            <Analytics />
           </NextIntlClientProvider>
         </Providers>
       </body>
