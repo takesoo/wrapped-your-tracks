@@ -10,6 +10,6 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default, // TODO: srcディレクトリ構成にしたら../を足す
+    messages: (await import(`../../messages/${locale}.json`)).default,
   };
 });
