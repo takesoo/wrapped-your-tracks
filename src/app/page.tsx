@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { sendGAEvent } from '@next/third-parties/google';
 import { Music, Sparkles, TrendingUp, Users } from 'lucide-react';
 import { signIn, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
@@ -13,6 +14,7 @@ export default function LandingPage() {
   const t = useTranslations('landing');
 
   const handleStartAnalyzing = async () => {
+    sendGAEvent('event', 'start_analyzing');
     if (status === 'authenticated') {
       // 既に認証済みの場合は直接ローディングページに遷移
       router.push('/loading');

@@ -6,11 +6,11 @@ import { mutate } from 'swr';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Music, RotateCcw, Crown, Play, Sparkles } from 'lucide-react';
+import { Music, RotateCcw, Crown, Play, Sparkles, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import type { RecentlyPlayedResponse, PersonaData } from '@/lib/spotify-types';
+import { sendGAEvent } from '@next/third-parties/google';
 
 const colors = ['#1DB954', '#00FFC2', '#33BBFF', '#FF6B6B', '#FFD93D'];
 
@@ -34,6 +34,10 @@ export default function SummaryPage() {
   const [topArtists, setTopArtists] = useState<ArtistStats[]>([]);
   const [topTracks, setTopTracks] = useState<TrackStats[]>([]);
   const [totalHours, setTotalHours] = useState(0);
+
+  useEffect(()=>{
+    sendGAEvent('event', 'view_result');
+  });
 
   useEffect(() => {
     // sessionStorageからデータを取得
@@ -110,9 +114,6 @@ export default function SummaryPage() {
     plays: artist.plays,
   }));
 
-  const genres = ['Electronic', 'Alternative Rock', 'Atmospheric', 'Indie'];
-  const genreColors = ['#1DB954', '#33BBFF', '#00FFC2', '#FF6B6B'];
-
   const handleReanalyze = () => {
     // SWRのペルソナキャッシュを削除（新しい分析結果を生成するため）
     mutate(
@@ -131,27 +132,28 @@ export default function SummaryPage() {
     router.push('/');
   };
 
-  // シェア機能は初期リリースでは含めない（機能の段階的リリースのため）
-  // TODO: 今後のアップデートで実装予定
-  // const handleShare = () => {
-  //   const personaTitle = typeof persona.persona === 'string' ? persona.persona : persona.persona.title;
+  const handleShare = () => {
+    const personaTitle = typeof persona.persona === 'string' ? persona.persona : persona.persona.title;
 
-  //   // Twitterの文字数制限を考慮したテキスト作成（140文字）
-  //   const baseText = `🎵 私の今週の音楽サマリー\n\nAI音楽ペルソナ: ${personaTitle}`;
-  //   const stats = `\n\n聴いた曲数: ${spotifyData.total}曲`;
-  //   const hashtags = '\n\n#SpotifyWrapped #音楽ペルソナ';
+    // Twitterの文字数制限を考慮したテキスト作成（140文字）
+    const baseText = `🎵 私の今週の音楽サマリー\n\nAI音楽ペルソナ: ${personaTitle}`;
+    const stats = `\n\n聴いた曲数: ${spotifyData.total}曲`;
+    const hashtags = '\n\n#WrappedYourTracks #音楽ペルソナ診断';
+    const url = '\n\nhttps://wrapped-your-tracks.vercel.app/';
 
-  //   // 140文字に収まるように調整
-  //   let text = baseText;
-  //   if ((text + stats + hashtags).length <= 140) {
-  //     text += stats;
-  //   }
-  //   text += hashtags;
+    // 140文字に収まるように調整
+    let text = baseText;
+    if ((text + stats + hashtags).length <= 140) {
+      text += stats;
+    }
+    text += url;
+    text += hashtags;
 
-  //   // Twitter Intent URLを使用してシェア
-  //   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-  //   window.open(tweetUrl, '_blank', 'width=550,height=420');
-  // };
+    // Twitter Intent URLを使用してシェア
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    sendGAEvent('event', 'share_result');
+    window.open(tweetUrl, '_blank', 'width=550,height=420');
+  };
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white">
       {/* Header */}
@@ -174,15 +176,14 @@ export default function SummaryPage() {
                 <RotateCcw className="h-4 w-4 mr-2" />
                 {t('reanalyze')}
               </Button>
-              {/* シェア機能は初期リリースでは含めない */}
-              {/* <Button
+              <Button
                 size="sm"
                 className="bg-[#1DB954] hover:bg-[#1ed760] text-black"
                 onClick={handleShare}
               >
                 <Share2 className="h-4 w-4 mr-2" />
                 シェア
-              </Button> */}
+              </Button>
             </div>
           </div>
         </div>
@@ -232,18 +233,6 @@ export default function SummaryPage() {
                   <p className="text-2xl font-bold text-purple-400">{persona.insights.timeDistribution.night}%</p>
                   <p className="text-sm text-[#A1A1A1]">{t('timeOfDay.night')}</p>
                 </div>
-              </div>
-              <div className="flex flex-wrap justify-center gap-3">
-                {genres.map((genre, index) => (
-                  <Badge
-                    key={genre}
-                    variant="outline"
-                    className={`border-[${genreColors[index]}] text-[${genreColors[index]}]`}
-                    style={{ borderColor: genreColors[index], color: genreColors[index] }}
-                  >
-                    {genre}
-                  </Badge>
-                ))}
               </div>
             </CardContent>
           </Card>

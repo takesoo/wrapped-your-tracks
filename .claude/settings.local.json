@@ -19,6 +19,5 @@
       "WebFetch(domain:next-intl.dev)"
     ],
     "deny": []
-  },
-  "preferredNotifChannel": "terminal_bell"
+  }
 }
