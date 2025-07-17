@@ -1,14 +1,14 @@
 {
   "metadata": {
-    "title": "WrappedYourTracks - あなたの今週の音楽",
-    "description": "週間の視聴パターンを発見し、AI生成の音楽ペルソナを取得"
+    "title": "WrappedYourTracks - あなたの最近の音楽",
+    "description": "最近の視聴パターンを発見し、AI生成の音楽ペルソナを取得"
   },
   "common": {
     "loading": "読み込み中..."
   },
   "landing": {
     "hero": {
-      "title": "あなたの今週の音楽",
+      "title": "あなたの最近の音楽",
       "subtitle": "視聴パターンを発見し、AI生成の音楽ペルソナを取得",
       "cta": "分析を開始",
       "signIn": "Spotifyでサインイン",
@@ -18,7 +18,7 @@
       "title": "発見できること",
       "topTracks": {
         "title": "トップトラック＆アーティスト",
-        "description": "過去1週間で最も再生した曲とアーティストを美しいビジュアライゼーションと再生回数で確認"
+        "description": "過去50曲で最も再生した曲とアーティストを美しいビジュアライゼーションと再生回数で確認"
       },
       "aiPersona": {
         "title": "AI音楽ペルソナ",
@@ -59,7 +59,7 @@
   "summary": {
     "reanalyze": "再分析",
     "share": "シェア",
-    "yourWeekInMusic": "あなたの今週の音楽",
+    "yourWeekInMusic": "あなたの最近の音楽",
     "analyzedSongs": "過去{count}曲の分析結果",
     "aiPersona": {
       "title": "あなたのAI音楽ペルソナ",

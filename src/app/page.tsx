@@ -68,23 +68,11 @@ export default function LandingPage() {
               }
             </Button>
           </div>
-
-          {/* Preview Image */}
-          <div className="relative">
-            <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 p-8 rounded-3xl backdrop-blur-xs">
-              <div className="aspect-video bg-linear-to-br from-[#1DB954]/20 to-[#00FFC2]/20 rounded-2xl flex items-center justify-center border border-gray-700">
-                <div className="text-center">
-                  <Sparkles className="h-16 w-16 text-[#00FFC2] mx-auto mb-4" />
-                  <p className="text-[#A1A1A1] text-lg">{t('hero.preview')}</p>
-                </div>
-              </div>
-            </Card>
-          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 pb-20">
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <Card className="bg-linear-to-br from-gray-900/50 to-gray-800/30 border-gray-700 p-8 rounded-3xl backdrop-blur-xs hover:shadow-[0_0_30px_rgba(0,255,194,0.1)] transition-all duration-300">
             <TrendingUp className="h-12 w-12 text-[#00FFC2] mb-6" />

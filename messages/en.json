@@ -1,14 +1,14 @@
 {
   "metadata": {
-    "title": "WrappedYourTracks - Your Week in Music",
-    "description": "Discover your weekly listening patterns and get an AI-generated music persona"
+    "title": "WrappedYourTracks - Your Recent Music",
+    "description": "Discover your recent listening patterns and get an AI-generated music persona"
   },
   "common": {
     "loading": "Loading..."
   },
   "landing": {
     "hero": {
-      "title": "Your Week in Music",
+      "title": "Your Recent Music",
       "subtitle": "Discover your listening patterns and get an AI-generated music persona",
       "cta": "Start Analyzing",
       "signIn": "Sign in with Spotify",
@@ -18,7 +18,7 @@
       "title": "What you'll discover",
       "topTracks": {
         "title": "Top Tracks & Artists",
-        "description": "See your most played songs and artists from the past week with beautiful visualizations and play counts"
+        "description": "See your most played songs and artists from the past 50 songs with beautiful visualizations and play counts"
       },
       "aiPersona": {
         "title": "AI Music Persona",
@@ -59,7 +59,7 @@
   "summary": {
     "reanalyze": "Re-analyze",
     "share": "Share",
-    "yourWeekInMusic": "Your Week in Music",
+    "yourWeekInMusic": "Your Recent Music",
     "analyzedSongs": "Analysis of past {count} songs",
     "aiPersona": {
       "title": "Your AI Music Persona",
