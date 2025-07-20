@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
       authorization: {
         params: {
           scope: scopes,
+          show_dialog: true,
         },
       },
     }),
@@ -39,6 +40,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/',
+    signIn: '/loading',
   },
 };
