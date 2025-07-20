@@ -54,6 +54,11 @@
       "spotifyFailed": "Spotifyデータの取得に失敗しました",
       "personaFailed": "ペルソナの生成に失敗しました",
       "retry": "再試行"
+    },
+    "noHistory": {
+      "title": "視聴履歴がありません",
+      "description": "視聴履歴がないため診断を中止しました。Spotifyで音楽を聴いてからもう一度お試しください。",
+      "backToHome": "ホームに戻る"
     }
   },
   "summary": {

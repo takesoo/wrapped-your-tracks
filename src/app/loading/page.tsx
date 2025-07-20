@@ -83,9 +83,12 @@ export default function LoadingPage() {
     checkAuthAndToken();
   }, [checkAuthAndToken]);
 
+  // 視聴履歴なしの場合の処理
+  const hasNoTracks = spotifyData && spotifyData.tracks.length === 0;
+  
   // エラー表示
   const error = tracksError || (personaError && !persona);
-  if (error) {
+  if (error || hasNoTracks) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] text-white flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
@@ -93,15 +96,21 @@ export default function LoadingPage() {
             <div className="h-24 w-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-4">
               <Music className="h-12 w-12 text-red-400" />
             </div>
-            <h2 className="text-xl font-semibold mb-4 text-red-400">{t('error.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4 text-red-400">
+              {hasNoTracks ? t('noHistory.title') : t('error.title')}
+            </h2>
             <p className="text-[#A1A1A1] text-sm mb-6">
-              {tracksError ? t('error.spotifyFailed') : t('error.personaFailed')}
+              {hasNoTracks 
+                ? t('noHistory.description') 
+                : tracksError 
+                  ? t('error.spotifyFailed') 
+                  : t('error.personaFailed')}
             </p>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => hasNoTracks ? router.push('/') : window.location.reload()}
               className="px-6 py-3 bg-[#1DB954] text-black font-semibold rounded-full hover:bg-[#1DB954]/90 transition-colors"
             >
-              {t('error.retry')}
+              {hasNoTracks ? t('noHistory.backToHome') : t('error.retry')}
             </button>
           </div>
         </div>

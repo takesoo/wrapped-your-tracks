@@ -54,6 +54,11 @@
       "spotifyFailed": "Failed to fetch Spotify data",
       "personaFailed": "Failed to generate persona",
       "retry": "Retry"
+    },
+    "noHistory": {
+      "title": "No Listening History",
+      "description": "Analysis stopped due to no listening history. Please listen to music on Spotify and try again.",
+      "backToHome": "Back to Home"
     }
   },
   "summary": {

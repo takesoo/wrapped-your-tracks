@@ -21,7 +21,6 @@ export async function GET(_request: NextRequest) {
 
     // 過去50件の再生履歴を取得
     const recentlyPlayed = await spotify.player.getRecentlyPlayedTracks(50);
-    console.log('recentPlayed', recentlyPlayed);
 
     // データを整理して返す
     const tracks = recentlyPlayed.items.map((item) => ({
