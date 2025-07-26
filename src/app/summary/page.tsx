@@ -100,6 +100,7 @@ export default function SummaryPage() {
       const totalMs = parsedSpotifyData.tracks.reduce((acc, item) => acc + item.track.duration_ms, 0);
       setTotalHours(Math.round((totalMs / (1000 * 60 * 60)) * 10) / 10);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to parse data:', error);
       router.push('/');
     }

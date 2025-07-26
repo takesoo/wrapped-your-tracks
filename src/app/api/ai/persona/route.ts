@@ -173,7 +173,9 @@ Follow the instructions above and output ONLY a pure JSON string. Do not use cod
       }
       personaData = JSON.parse(cleanOutput);
     } catch (parseError) {
+      // eslint-disable-next-line no-console
       console.error('Failed to parse persona data:', parseError);
+      // eslint-disable-next-line no-console
       console.error('Raw output:', personaResult.finalOutput);
       // フォールバック
       personaData = locale === 'ja'

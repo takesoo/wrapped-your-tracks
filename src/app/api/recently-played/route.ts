@@ -67,11 +67,14 @@ export async function GET(_request: NextRequest) {
     });
 
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error fetching recently played tracks:', error);
 
     // エラーの詳細をログに出力
     if (error instanceof Error) {
+      // eslint-disable-next-line no-console
       console.error('Error message:', error.message);
+      // eslint-disable-next-line no-console
       console.error('Error stack:', error.stack);
     }
 
