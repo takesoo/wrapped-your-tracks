@@ -85,7 +85,7 @@ export default function LoadingPage() {
 
   // 視聴履歴なしの場合の処理
   const hasNoTracks = spotifyData && spotifyData.tracks.length === 0;
-  
+
   // エラー表示
   const error = tracksError || (personaError && !persona);
   if (error || hasNoTracks) {
@@ -100,10 +100,10 @@ export default function LoadingPage() {
               {hasNoTracks ? t('noHistory.title') : t('error.title')}
             </h2>
             <p className="text-[#A1A1A1] text-sm mb-6">
-              {hasNoTracks 
-                ? t('noHistory.description') 
-                : tracksError 
-                  ? t('error.spotifyFailed') 
+              {hasNoTracks
+                ? t('noHistory.description')
+                : tracksError
+                  ? t('error.spotifyFailed')
                   : t('error.personaFailed')}
             </p>
             <button
