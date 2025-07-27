@@ -7,11 +7,28 @@ import { Music, Sparkles, TrendingUp, Users } from 'lucide-react';
 import { signIn, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { mutate } from 'swr';
 
 export default function LandingPage() {
   const { data: _session, status } = useSession();
   const router = useRouter();
   const t = useTranslations('landing');
+
+  useEffect(() => {
+    // SWRのペルソナキャッシュを削除（新しい分析結果を生成するため）
+    mutate(
+      (key) => Array.isArray(key) && key[0] === '/api/ai/persona',
+      undefined,
+      { revalidate: false },
+    );
+
+    // SWRのSpotifyデータキャッシュも削除
+    mutate('/api/recently-played', undefined, { revalidate: false });
+
+    // sessionStorageをクリア
+    sessionStorage.clear();
+  });
 
   const handleStartAnalyzing = async () => {
     sendGAEvent('event', 'start_analyzing');

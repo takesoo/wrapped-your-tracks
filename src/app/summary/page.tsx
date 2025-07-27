@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { mutate } from 'swr';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -115,24 +114,6 @@ export default function SummaryPage() {
     plays: artist.plays,
   }));
 
-  const handleReanalyze = () => {
-    // SWRのペルソナキャッシュを削除（新しい分析結果を生成するため）
-    mutate(
-      (key) => Array.isArray(key) && key[0] === '/api/ai/persona',
-      undefined,
-      { revalidate: false },
-    );
-
-    // SWRのSpotifyデータキャッシュも削除
-    mutate('/api/recently-played', undefined, { revalidate: false });
-
-    // sessionStorageをクリア
-    sessionStorage.clear();
-
-    // トップページへリダイレクト
-    router.push('/');
-  };
-
   const handleShare = () => {
     const personaTitle = typeof persona.persona === 'string' ? persona.persona : persona.persona.title;
 
@@ -168,15 +149,13 @@ export default function SummaryPage() {
               <span className="text-xl font-bold">WrappedYourTracks</span>
             </Link>
             <div className="flex space-x-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-gray-700 hover:bg-gray-800"
-                onClick={handleReanalyze}
+              <Link
+                href="/"
+                className="inline-flex items-center justify-center px-3 py-1 text-sm font-medium rounded-md border border-gray-700 hover:bg-gray-800 transition-colors"
               >
                 <RotateCcw className="h-4 w-4 mr-2" />
                 {t('reanalyze')}
-              </Button>
+              </Link>
               <Button
                 size="sm"
                 className="bg-[#1DB954] hover:bg-[#1ed760] text-black"
