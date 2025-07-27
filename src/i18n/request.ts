@@ -1,8 +1,13 @@
 import { getRequestConfig } from 'next-intl/server';
+import { headers } from 'next/headers';
 
 export default getRequestConfig(async () => {
-  // INFO: グローバルに公開することを見越して多言語対応していたが、Spotify APIを本番運用できないことが発覚したので、日本限定に変更しました
-  const locale = 'ja';
+  // Provide a static locale, fetch a user setting,
+  // read from `cookies()`, `headers()`, etc.
+  const headersList = await headers();
+  const acceptLanguage = headersList.get('accept-language')?.split(',');
+  const locale = (acceptLanguage && acceptLanguage[0] === 'ja') ? 'ja' : 'en';
+
   return {
     locale,
     messages: (await import(`../../messages/${locale}.json`)).default,
