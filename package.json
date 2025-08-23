@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@next/third-parties": "^15.3.5",
-    "@openai/agents": "^0.0.10",
+    "@openai/agents": "^0.0.17",
     "@radix-ui/react-slot": "^1.2.3",
     "@spotify/web-api-ts-sdk": "^1.2.0",
     "axios": "^1.7.9",
